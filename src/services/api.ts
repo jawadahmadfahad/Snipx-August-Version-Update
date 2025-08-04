@@ -20,7 +20,15 @@ const videoOptionsSchema = z.object({
   enhance_audio: z.boolean().optional(),
   generate_thumbnail: z.boolean().optional(),
   generate_subtitles: z.boolean().optional(),
-  summarize: z.boolean().optional()
+  summarize: z.boolean().optional(),
+  // Enhancement specific options
+  stabilization: z.string().optional(),
+  audio_enhancement_type: z.string().optional(),
+  brightness: z.number().optional(),
+  contrast: z.number().optional(),
+  // Subtitle specific options
+  subtitle_language: z.string().optional(),
+  subtitle_style: z.string().optional()
 });
 
 export class ApiService {
@@ -122,6 +130,14 @@ export class ApiService {
     generate_thumbnail?: boolean;
     generate_subtitles?: boolean;
     summarize?: boolean;
+    // Enhancement specific options
+    stabilization?: string;
+    audio_enhancement_type?: string;
+    brightness?: number;
+    contrast?: number;
+    // Subtitle specific options
+    subtitle_language?: string;
+    subtitle_style?: string;
   }) {
     const validated = videoOptionsSchema.parse(options);
     return this.request(`/videos/${videoId}/process`, {
@@ -142,5 +158,54 @@ export class ApiService {
     return this.request(`/videos/${videoId}`, {
       method: 'DELETE'
     });
+  }
+
+  // Enhanced subtitle generation with Whisper
+  static async generateAdvancedSubtitles(videoId: string, options: {
+    language: string;
+    style: string;
+    format?: 'srt' | 'json' | 'both';
+  }) {
+    return this.request(`/videos/${videoId}/subtitles/advanced`, {
+      method: 'POST',
+      body: JSON.stringify(options)
+    });
+  }
+
+  // Get subtitle data in JSON format for live preview
+  static async getSubtitleData(videoId: string, language: string) {
+    return this.request(`/videos/${videoId}/subtitles/${language}/json`);
+  }
+
+  // Download processed video
+  static async downloadVideo(videoId: string): Promise<Blob> {
+    const token = this.getToken();
+    const response = await fetch(`${API_URL}/videos/${videoId}/download`, {
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Download failed');
+    }
+
+    return response.blob();
+  }
+
+  // Download subtitle file
+  static async downloadSubtitles(videoId: string, language: string, format: 'srt' | 'json' = 'srt'): Promise<Blob> {
+    const token = this.getToken();
+    const response = await fetch(`${API_URL}/videos/${videoId}/subtitles/${language}/download?format=${format}`, {
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Subtitle download failed');
+    }
+
+    return response.blob();
   }
 }

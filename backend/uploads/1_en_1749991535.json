@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "start": 0.0,
+    "end": 6.68,
+    "text": "from this series",
+    "language": "en",
+    "style": "clean"
+  },
+  {
+    "id": 2,
+    "start": 6.68,
+    "end": 7.82,
+    "text": "Right green",
+    "language": "en",
+    "style": "clean"
+  }
+]

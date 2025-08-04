@@ -1,0 +1,73 @@
+{
+  "language": "ru",
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 2.48,
+      "text": "Экспозинт this secret to never being stranded again."
+    },
+    {
+      "start": 3.24,
+      "end": 5.74,
+      "text": "Meet MechanicMate, your new roadside best friend."
+    },
+    {
+      "start": 6.1,
+      "end": 8.96,
+      "text": "With MechanicMate, finding a mechanic is as easy as pie."
+    },
+    {
+      "start": 9.46,
+      "end": 11.44,
+      "text": "Just open the app, request help, and voila."
+    },
+    {
+      "start": 12.22,
+      "end": 14.4,
+      "text": "You get connected to nearby mechanics in seconds."
+    },
+    {
+      "start": 14.94,
+      "end": 18.42,
+      "text": "But here's the best part, you can track your mechanic live."
+    },
+    {
+      "start": 19.22,
+      "end": 20.94,
+      "text": "No more guessing games are endless waiting."
+    },
+    {
+      "start": 21.66,
+      "end": 23.92,
+      "text": "Simply watch as your help drives straight to you."
+    },
+    {
+      "start": 24.6,
+      "end": 27.96,
+      "text": "MechanicMate gives you peace of mind and gets you back on the road faster than ever."
+    },
+    {
+      "start": 27.96,
+      "end": 29.86,
+      "text": "Это как ч Wheel SA"
+    },
+    {
+      "start": 29.86,
+      "end": 31.08,
+      "text": "Я не хочу гранистрости.\""
+    },
+    {
+      "start": 31.08,
+      "end": 43.5,
+      "text": "Ahh, это все alright."
+    },
+    {
+      "start": 43.5,
+      "end": 47.52,
+      "text": "Редактор субтитров А.Семкин Корректор А.Егорова"
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "whisper"
+}

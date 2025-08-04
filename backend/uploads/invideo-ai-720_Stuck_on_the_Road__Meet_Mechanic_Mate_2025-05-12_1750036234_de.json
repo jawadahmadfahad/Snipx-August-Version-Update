@@ -1,0 +1,78 @@
+{
+  "language": "de",
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 2.46,
+      "text": "Exposing the secret to never being stranded again."
+    },
+    {
+      "start": 3.1,
+      "end": 5.74,
+      "text": "Meet MechanicMate, your new roadside best friend."
+    },
+    {
+      "start": 6.24,
+      "end": 8.96,
+      "text": "With MechanicMate, finding a mechanic is as easy as pie."
+    },
+    {
+      "start": 9.44,
+      "end": 11.42,
+      "text": "Just open the app, request help, and voila!"
+    },
+    {
+      "start": 12.16,
+      "end": 14.4,
+      "text": "You get connected to nearby Mechanics in seconds."
+    },
+    {
+      "start": 14.94,
+      "end": 18.42,
+      "text": "But here's the best part, you can track your mechanic live."
+    },
+    {
+      "start": 19.22,
+      "end": 20.94,
+      "text": "No more guessing games are endless waiting."
+    },
+    {
+      "start": 21.62,
+      "end": 23.92,
+      "text": "Simply watch as your help drives straight to you."
+    },
+    {
+      "start": 24.6,
+      "end": 27.96,
+      "text": "MechanicMate gives you peace of mind and gets you back on the road faster than ever."
+    },
+    {
+      "start": 28.419999999999998,
+      "end": 30.7,
+      "text": "It's like having a friendly mechanic in your pocket."
+    },
+    {
+      "start": 31.18,
+      "end": 33.18,
+      "text": "So next time you're stuck, don't stress."
+    },
+    {
+      "start": 33.8,
+      "end": 36.76,
+      "text": "Just fire up MechanicMate and let us handle the rest."
+    },
+    {
+      "start": 37.56,
+      "end": 39.88,
+      "text": "Download MechanicMate today and never be stranded again."
+    },
+    {
+      "start": 40.82,
+      "end": 43.64,
+      "text": "MechanicMate, fast, transparent, and always there when you need us."
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "whisper"
+}

@@ -1,0 +1,78 @@
+{
+  "language": "ru",
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 1.92,
+      "text": "ТРЕВОЖНАЯ МУЗЫКА"
+    },
+    {
+      "start": 2.86,
+      "end": 5.78,
+      "text": "Мет-маканик-мей, your new roadside best friend."
+    },
+    {
+      "start": 6.06,
+      "end": 8.98,
+      "text": "With mechanic mate, finding a mechanic is as easy as pie."
+    },
+    {
+      "start": 9.46,
+      "end": 11.44,
+      "text": "Just open the app, request help, and voila."
+    },
+    {
+      "start": 12.16,
+      "end": 14.4,
+      "text": "You get connected to nearby mechanics in seconds."
+    },
+    {
+      "start": 15.02,
+      "end": 18.42,
+      "text": "But here's the best part. You can track your mechanic live."
+    },
+    {
+      "start": 19.22,
+      "end": 20.94,
+      "text": "No more guessing games are endless waiting."
+    },
+    {
+      "start": 21.66,
+      "end": 23.96,
+      "text": "Simply watch as your help drives straight to you."
+    },
+    {
+      "start": 24.54,
+      "end": 27.96,
+      "text": "Mechanic mate gives you peace of mind and gets you back on the road faster than ever."
+    },
+    {
+      "start": 28.54,
+      "end": 30.7,
+      "text": "It's like having a friendly mechanic in your pocket."
+    },
+    {
+      "start": 30.7,
+      "end": 33.22,
+      "text": "So next time you're stuck, don't stress."
+    },
+    {
+      "start": 33.72,
+      "end": 36.8,
+      "text": "Just fire up mechanic mate and let us handle the rest."
+    },
+    {
+      "start": 37.26,
+      "end": 39.9,
+      "text": "Download mechanic mate today and never be stranded again."
+    },
+    {
+      "start": 40.6,
+      "end": 43.64,
+      "text": "Mechanic mate, fast, transparent, and always there when you need us."
+    }
+  ],
+  "word_timestamps": true,
+  "confidence": 0.95,
+  "source": "whisper"
+}
