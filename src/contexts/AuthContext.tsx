@@ -11,6 +11,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
+  loginAsDemo: () => Promise<void>;
   register: (data: {
     email: string;
     password: string;
@@ -44,6 +45,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const loginAsDemo = async () => {
+    try {
+      // Use demo credentials to login
+      const response = await ApiService.login('demo@snipx.com', 'demo1234');
+      setUser(response.user);
+    } catch (error) {
+      // If demo login fails, create a local demo session
+      console.warn('Demo login failed, creating local session:', error);
+      ApiService.setToken('demo-token-123456');
+      setUser({ 
+        email: 'demo@snipx.com', 
+        firstName: 'Demo', 
+        lastName: 'User' 
+      });
+    }
+  };
+
   const register = async (data: {
     email: string;
     password: string;
@@ -64,6 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         isAuthenticated: !!user,
         login,
+        loginAsDemo,
         register,
         logout,
         setUser

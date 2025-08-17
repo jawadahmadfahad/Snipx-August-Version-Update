@@ -1,6 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
 import { Play, Pause, Volume2, VolumeX, Maximize, Settings, Captions as ClosedCaptioning } from 'lucide-react';
-import { ApiService, SubtitleData } from '../services/api';
+import { ApiService } from '../services/api';
+
+interface SubtitleData {
+  id: number;
+  start: number;
+  end: number;
+  text: string;
+  language: string;
+  style: string;
+}
 
 interface VideoPlayerProps {
   videoUrl: string;
@@ -22,33 +31,94 @@ const VideoPlayer = ({ videoUrl, videoId, subtitles, onTimeUpdate }: VideoPlayer
   const [loadedSubtitles, setLoadedSubtitles] = useState<SubtitleData[]>([]);
   const controlsTimeoutRef = useRef<NodeJS.Timeout>();
 
-  // Load subtitles when videoId changes
+  // Load subtitles when videoId or provided subtitles change
   useEffect(() => {
+    console.log('[VideoPlayer] useEffect triggered:', { videoId, subtitles: !!subtitles });
     if (videoId && !subtitles) {
+      console.log('[VideoPlayer] Loading subtitles for videoId:', videoId);
       loadSubtitles();
-    } else if (subtitles) {
-      setLoadedSubtitles(subtitles);
+    } else if (subtitles && Array.isArray(subtitles) && subtitles.length > 0) {
+      console.log('[VideoPlayer] Using provided subtitles:', subtitles.length);
+      
+      // Transform provided subtitles to ensure proper format
+      const formattedSubtitles = subtitles.map((segment: any, index: number) => ({
+        id: segment.id || index,
+        start: typeof segment.start === 'number' ? segment.start : parseFloat(segment.start) || 0,
+        end: typeof segment.end === 'number' ? segment.end : parseFloat(segment.end) || 0,
+        text: segment.text || '',
+        language: segment.language || 'en',
+        style: segment.style || 'default'
+      }));
+      
+      console.log('[VideoPlayer] Formatted provided subtitles:', formattedSubtitles.slice(0, 3));
+      setLoadedSubtitles(formattedSubtitles);
+      setShowSubtitles(true); // Auto-enable subtitles when provided
+    } else {
+      console.log('[VideoPlayer] No videoId or subtitles provided');
+      setLoadedSubtitles([]);
     }
   }, [videoId, subtitles]);
 
   // Update current subtitle based on time
   useEffect(() => {
-    if (loadedSubtitles.length > 0) {
+    if (loadedSubtitles.length > 0 && showSubtitles) {
       const subtitle = loadedSubtitles.find(
         sub => currentTime >= sub.start && currentTime <= sub.end
       );
-      setCurrentSubtitle(subtitle || null);
+      
+      if (subtitle !== currentSubtitle) {
+        setCurrentSubtitle(subtitle || null);
+        if (subtitle) {
+          console.log('[VideoPlayer] 📺 Current subtitle:', {
+            time: currentTime,
+            start: subtitle.start,
+            end: subtitle.end,
+            text: subtitle.text.substring(0, 50) + '...'
+          });
+        }
+      }
+    } else {
+      if (currentSubtitle) {
+        setCurrentSubtitle(null);
+      }
     }
-  }, [currentTime, loadedSubtitles]);
+  }, [currentTime, loadedSubtitles, showSubtitles]);
 
   const loadSubtitles = async () => {
-    if (!videoId) return;
+    if (!videoId) {
+      console.log('[VideoPlayer] loadSubtitles: No videoId provided');
+      return;
+    }
     
     try {
-      const subtitleData = await ApiService.getVideoSubtitles(videoId);
-      setLoadedSubtitles(subtitleData);
+      console.log('[VideoPlayer] Loading subtitles for video:', videoId);
+      const subtitleSegments = await ApiService.getVideoSubtitles(videoId);
+      console.log('[VideoPlayer] Received subtitle segments:', subtitleSegments);
+      
+      if (Array.isArray(subtitleSegments) && subtitleSegments.length > 0) {
+        // Transform segments to ensure proper format
+        const formattedSubtitles = subtitleSegments.map((segment: any, index: number) => ({
+          id: segment.id || index,
+          start: typeof segment.start === 'number' ? segment.start : parseFloat(segment.start) || 0,
+          end: typeof segment.end === 'number' ? segment.end : parseFloat(segment.end) || 0,
+          text: segment.text || '',
+          language: segment.language || 'en',
+          style: segment.style || 'default'
+        }));
+        
+        console.log('[VideoPlayer] Formatted subtitles:', formattedSubtitles.length, 'segments');
+        console.log('[VideoPlayer] First 3 segments:', formattedSubtitles.slice(0, 3));
+        
+        setLoadedSubtitles(formattedSubtitles);
+        setShowSubtitles(true); // Auto-enable subtitles when loaded
+        
+      } else {
+        console.log('[VideoPlayer] No subtitle segments received');
+        setLoadedSubtitles([]);
+      }
     } catch (error) {
-      console.error('Failed to load subtitles:', error);
+      console.error('[VideoPlayer] Failed to load subtitles:', error);
+      setLoadedSubtitles([]);
     }
   };
 
@@ -136,14 +206,14 @@ const VideoPlayer = ({ videoUrl, videoId, subtitles, onTimeUpdate }: VideoPlayer
 
   return (
     <div 
-      className="relative bg-black rounded-lg overflow-hidden group"
+      className="relative bg-black rounded-lg overflow-hidden group w-full h-full"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
       <video
         ref={videoRef}
         src={videoUrl}
-        className="w-full h-full object-contain"
+        className="w-full h-full object-contain bg-black"
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
         onPlay={() => setIsPlaying(true)}
@@ -153,18 +223,47 @@ const VideoPlayer = ({ videoUrl, videoId, subtitles, onTimeUpdate }: VideoPlayer
 
       {/* Subtitles Overlay */}
       {showSubtitles && currentSubtitle && (
-        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-20">
-          <div className="bg-black bg-opacity-75 text-white px-4 py-2 rounded-md text-center max-w-md">
-            <p className="text-sm md:text-base font-medium leading-relaxed">
+        <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 z-30 pointer-events-none px-4 w-full max-w-4xl">
+          <div className="bg-black bg-opacity-90 text-white px-6 py-3 rounded-lg text-center shadow-lg border border-gray-600 mx-auto max-w-2xl">
+            <p className="text-base md:text-lg font-medium leading-relaxed tracking-wide break-words">
               {currentSubtitle.text}
             </p>
           </div>
         </div>
       )}
 
+      {/* Debug Subtitle Info */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="absolute top-4 right-4 bg-black bg-opacity-75 text-white p-3 rounded-lg text-xs max-w-xs z-50">
+          <div>📺 Subtitles: {loadedSubtitles.length} loaded</div>
+          <div>⏰ Time: {currentTime.toFixed(2)}s</div>
+          <div>🎬 Current: {currentSubtitle ? currentSubtitle.text.substring(0, 30) + '...' : 'None'}</div>
+          <div>👁️ Visible: {showSubtitles ? 'Yes' : 'No'}</div>
+          {loadedSubtitles.length > 0 && !showSubtitles && (
+            <div className="text-yellow-400 mt-1">⚠️ Click CC to show subtitles</div>
+          )}
+        </div>
+      )}
+
+      {/* Force Show Subtitles Button (Debug) */}
+      {loadedSubtitles.length > 0 && process.env.NODE_ENV === 'development' && (
+        <div className="absolute top-4 left-4 z-40">
+          <button
+            onClick={() => {
+              // Force show first subtitle for testing
+              setCurrentSubtitle(loadedSubtitles[0]);
+              console.log('[VideoPlayer] 🧪 Force showing first subtitle:', loadedSubtitles[0]);
+            }}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs"
+          >
+            🧪 Test Subtitle
+          </button>
+        </div>
+      )}
+
       {/* Video Controls */}
       <div 
-        className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/50 to-transparent p-4 transition-opacity duration-300 ${
+        className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/50 to-transparent p-4 transition-opacity duration-300 z-40 ${
           showControls ? 'opacity-100' : 'opacity-0'
         }`}
       >
@@ -228,12 +327,15 @@ const VideoPlayer = ({ videoUrl, videoId, subtitles, onTimeUpdate }: VideoPlayer
             {loadedSubtitles.length > 0 && (
               <button
                 onClick={() => setShowSubtitles(!showSubtitles)}
-                className={`transition-colors ${
-                  showSubtitles ? 'text-purple-400' : 'text-white hover:text-purple-400'
+                className={`transition-colors flex items-center space-x-1 px-2 py-1 rounded ${
+                  showSubtitles 
+                    ? 'text-purple-400 bg-purple-400/20' 
+                    : 'text-white hover:text-purple-400 hover:bg-white/10'
                 }`}
-                title="Toggle Subtitles"
+                title={`${showSubtitles ? 'Hide' : 'Show'} Subtitles (${loadedSubtitles.length} segments)`}
               >
                 <ClosedCaptioning size={20} />
+                <span className="text-xs font-medium">CC</span>
               </button>
             )}
 

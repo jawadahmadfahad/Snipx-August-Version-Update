@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { ApiService } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import VideoPlayer from '../components/VideoPlayer';
 import toast from 'react-hot-toast';
 
 // Helper function to format file size
@@ -100,6 +101,7 @@ const Features = () => {
   const [previewFilters, setPreviewFilters] = useState<string>('');
   const [generatedSubtitles, setGeneratedSubtitles] = useState<string>('');
   const [subtitleFile, setSubtitleFile] = useState<string | null>(null);
+  const [subtitleData, setSubtitleData] = useState<any[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const processingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -380,6 +382,7 @@ const Features = () => {
       setThumbnailFrames([]);
       setSelectedFrameIndex(null);
       setGeneratedSubtitles('');
+      setSubtitleData([]);
       setSubtitleFile(null);
       
       // Reset enhancement values
@@ -450,27 +453,83 @@ const Features = () => {
   };
 
   // FIXED: Enhanced subtitle generation with language support
-  const handleGenerateSubtitles = () => {
+  const handleGenerateSubtitles = async () => {
     if (!uploadedVideoId) {
       toast.error('Please upload a video file first');
       return;
     }
     logToConsole(`Starting subtitle generation: Lang=${subtitleLanguage}, Style=${subtitleStyle}`);
-    processVideo(
-      { 
-        generate_subtitles: true,
-        subtitle_language: subtitleLanguage,
-        subtitle_style: subtitleStyle
-      },
-      setSubtitlesProgress,
-      'Subtitles generated successfully'
-    ).then(() => {
-      // Simulate subtitle generation
-      const sampleSubtitles = generateSampleSubtitles(subtitleLanguage);
-      setGeneratedSubtitles(sampleSubtitles);
-      setSubtitleFile(`subtitles_${subtitleLanguage}.srt`);
-      logToConsole(`Subtitles generated in ${getLanguageName(subtitleLanguage)}`, 'success');
-    });
+    
+    try {
+      await processVideo(
+        { 
+          generate_subtitles: true,
+          subtitle_language: subtitleLanguage,
+          subtitle_style: subtitleStyle
+        },
+        setSubtitlesProgress,
+        'Subtitles generated successfully'
+      );
+      
+      // Get real subtitles from API if authenticated
+      if (isAuthenticated) {
+        try {
+          const subtitleApiData = await ApiService.getVideoSubtitles(uploadedVideoId);
+          if (subtitleApiData && subtitleApiData.length > 0) {
+            // Store raw subtitle data for VideoPlayer
+            setSubtitleData(subtitleApiData);
+            // Convert subtitle data to SRT format for display
+            const srtContent = convertSubtitlesToSRT(subtitleApiData);
+            setGeneratedSubtitles(srtContent);
+            setSubtitleFile(`subtitles_${subtitleLanguage}.srt`);
+            logToConsole(`Real subtitles loaded: ${subtitleApiData.length} segments`, 'success');
+          } else {
+            // Fallback to sample if no real subtitles
+            const sampleSubtitles = generateSampleSubtitles(subtitleLanguage);
+            setGeneratedSubtitles(sampleSubtitles);
+            setSubtitleFile(`subtitles_${subtitleLanguage}.srt`);
+            setSubtitleData([]); // Clear subtitle data
+            logToConsole(`Using sample subtitles for ${getLanguageName(subtitleLanguage)}`, 'info');
+          }
+        } catch (error) {
+          console.error('Failed to load real subtitles:', error);
+          // Fallback to sample subtitles
+          const sampleSubtitles = generateSampleSubtitles(subtitleLanguage);
+          setGeneratedSubtitles(sampleSubtitles);
+          setSubtitleFile(`subtitles_${subtitleLanguage}.srt`);
+          setSubtitleData([]); // Clear subtitle data
+          logToConsole(`API failed, using sample subtitles`, 'info');
+        }
+      } else {
+        // Demo mode - use sample subtitles
+        const sampleSubtitles = generateSampleSubtitles(subtitleLanguage);
+        setGeneratedSubtitles(sampleSubtitles);
+        setSubtitleFile(`subtitles_${subtitleLanguage}.srt`);
+        setSubtitleData([]); // Clear subtitle data in demo mode
+        logToConsole(`Demo mode: Generated sample subtitles in ${getLanguageName(subtitleLanguage)}`, 'success');
+      }
+    } catch (error) {
+      logToConsole(`Subtitle generation failed: ${error}`, 'error');
+      toast.error('Subtitle generation failed');
+    }
+  };
+
+  // Helper function to convert API subtitle data to SRT format
+  const convertSubtitlesToSRT = (subtitleData: any[]): string => {
+    return subtitleData.map((sub, index) => {
+      const startTime = formatTimeForSRT(sub.start);
+      const endTime = formatTimeForSRT(sub.end);
+      return `${index + 1}\n${startTime} --> ${endTime}\n${sub.text}\n`;
+    }).join('\n');
+  };
+
+  // Helper function to format time for SRT
+  const formatTimeForSRT = (seconds: number): string => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    const milliseconds = Math.floor((seconds % 1) * 1000);
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')},${milliseconds.toString().padStart(3, '0')}`;
   };
 
   // Helper function to generate sample subtitles based on language
@@ -936,10 +995,35 @@ Automatisch generiert von SnipX AI`
               </div>
             )}
 
-            <div className="mt-6">
+            <div className="mt-6 flex space-x-4">
               <button onClick={handleGenerateSubtitles} className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out flex items-center disabled:opacity-50 disabled:cursor-not-allowed" disabled={!uploadedVideoId || isUploading}>
                 <Captions className="mr-2 h-4 w-4" />Generate Subtitles
               </button>
+              
+              {/* Debug test button for subtitle loading */}
+              {process.env.NODE_ENV === 'development' && isAuthenticated && uploadedVideoId && (
+                <button 
+                  onClick={async () => {
+                    try {
+                      console.log('[Features] 🧪 Testing subtitle API for videoId:', uploadedVideoId);
+                      const testData = await ApiService.getVideoSubtitles(uploadedVideoId);
+                      console.log('[Features] 🧪 Test API response:', testData);
+                      if (testData && testData.length > 0) {
+                        setSubtitleData(testData);
+                        logToConsole(`🧪 Test: Loaded ${testData.length} subtitle segments`, 'success');
+                      } else {
+                        logToConsole(`🧪 Test: No subtitle data found`, 'info');
+                      }
+                    } catch (error) {
+                      console.error('[Features] 🧪 Test error:', error);
+                      logToConsole(`🧪 Test: API error - ${error}`, 'error');
+                    }
+                  }}
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-xs font-medium"
+                >
+                  🧪 Test Subtitles
+                </button>
+              )}
             </div>
             {renderProgressBar(subtitlesProgress)}
           </div>
@@ -1125,28 +1209,19 @@ Automatisch generiert von SnipX AI`
                 <p>Upload a video to see preview</p>
               </div>
             ) : (
-              <video 
-                id="video-player" 
-                ref={videoRef}
-                controls 
-                src={videoSrc} 
-                className="w-full h-full block bg-black"
-                style={{ filter: previewFilters }}
-              >
-                {/* Add subtitle track if available */}
-                {subtitleFile && (
-                  <track
-                    kind="subtitles"
-                    src={`data:text/vtt,${encodeURIComponent(generatedSubtitles)}`}
-                    srcLang={subtitleLanguage}
-                    label={getLanguageName(subtitleLanguage)}
-                    default
-                  />
-                )}
-              </video>
+              <div className="w-full h-full relative bg-black" style={{ filter: previewFilters }}>
+                <VideoPlayer
+                  videoUrl={videoSrc}
+                  videoId={isAuthenticated ? uploadedVideoId : undefined}
+                  subtitles={subtitleData.length > 0 ? subtitleData : undefined}
+                  onTimeUpdate={(time) => {
+                    // Optional: handle time updates if needed
+                  }}
+                />
+              </div>
             )}
             {isLoadingPreview && (
-              <div id="preview-loading" className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center backdrop-blur-sm">
+              <div id="preview-loading" className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center backdrop-blur-sm z-50">
                 <Loader2 className="animate-spin h-12 w-12 text-indigo-400" />
               </div>
             )}
@@ -1154,21 +1229,47 @@ Automatisch generiert von SnipX AI`
           
           {/* Live Preview Controls */}
           {videoSrc && (
-            <div className="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">Live Enhancement Preview</span>
-                <div className="flex items-center space-x-4 text-xs text-gray-600">
-                  <span>Brightness: {brightnessLevel}%</span>
-                  <span>Contrast: {contrastLevel}%</span>
-                  <button 
-                    onClick={() => {
-                      setBrightnessLevel(100);
-                      setContrastLevel(100);
-                    }}
-                    className="text-indigo-600 hover:text-indigo-800 font-medium"
-                  >
-                    Reset
-                  </button>
+            <div className="mt-4 space-y-4">
+              {/* Subtitle Controls */}
+              {(subtitleData.length > 0 || generatedSubtitles) && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <Captions className="h-5 w-5 text-blue-600" />
+                      <span className="text-sm font-medium text-blue-900">
+                        {subtitleData.length > 0 
+                          ? `Live Subtitles Active (${subtitleData.length} segments)`
+                          : `Subtitles Generated (${generatedSubtitles ? 'SRT format' : 'Processing...'})`
+                        }
+                      </span>
+                    </div>
+                    <div className="text-xs text-blue-700">
+                      {subtitleData.length > 0 
+                        ? 'Real-time Whisper AI transcription'
+                        : 'Use CC button in player controls'
+                      }
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Enhancement Controls */}
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700">Live Enhancement Preview</span>
+                  <div className="flex items-center space-x-4 text-xs text-gray-600">
+                    <span>Brightness: {brightnessLevel}%</span>
+                    <span>Contrast: {contrastLevel}%</span>
+                    <button 
+                      onClick={() => {
+                        setBrightnessLevel(100);
+                        setContrastLevel(100);
+                      }}
+                      className="text-indigo-600 hover:text-indigo-800 font-medium"
+                    >
+                      Reset
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

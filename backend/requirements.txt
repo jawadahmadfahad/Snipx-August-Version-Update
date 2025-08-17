@@ -10,9 +10,10 @@ werkzeug==3.0.1
 gunicorn==21.2.0
 pytesseract==0.3.10
 opencv-python==4.8.0.74
-tensorflow==2.18.0
+tensorflow==2.19.0
 transformers==4.36.2
-torch==2.5.1
+torch==2.7.1
 openai-whisper==20231117
 SpeechRecognition==3.10.0
-PyAudio==0.2.11
+PyAudio==0.2.14
+whisper==1.1.10

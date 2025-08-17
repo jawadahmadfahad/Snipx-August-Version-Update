@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, loginAsDemo } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,6 +23,19 @@ const Login = () => {
       navigate('/editor');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Login failed');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDemoLogin = async () => {
+    setIsLoading(true);
+    try {
+      await loginAsDemo();
+      toast.success('Demo mode activated!');
+      navigate('/editor');
+    } catch (error) {
+      toast.error('Demo login failed');
     } finally {
       setIsLoading(false);
     }
@@ -173,11 +186,20 @@ const Login = () => {
 
             {/* Demo Account Info */}
             <div className="mt-6 bg-indigo-50 border border-indigo-100 rounded-md p-4">
-              <h4 className="text-sm font-medium text-indigo-800 mb-2">Demo Account</h4>
-              <p className="text-xs text-indigo-600">
-                <span className="font-medium">Email:</span> demo@snipx.com
-                <br />
-                <span className="font-medium">Password:</span> demo1234
+              <h4 className="text-sm font-medium text-indigo-800 mb-2">Try Demo Mode</h4>
+              <p className="text-xs text-indigo-600 mb-3">
+                Experience SnipX features without creating an account
+              </p>
+              <button
+                type="button"
+                onClick={handleDemoLogin}
+                disabled={isLoading}
+                className="w-full bg-indigo-100 text-indigo-700 py-2 px-4 rounded-md font-medium hover:bg-indigo-200 transition-colors disabled:opacity-50 border border-indigo-200"
+              >
+                {isLoading ? 'Starting Demo...' : 'Enter Demo Mode'}
+              </button>
+              <p className="text-xs text-indigo-500 mt-2">
+                Or use credentials: demo@snipx.com / demo1234
               </p>
             </div>
           </div>

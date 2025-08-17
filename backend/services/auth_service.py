@@ -8,7 +8,11 @@ class AuthService:
     def __init__(self, db):
         self.db = db
         self.users = db.users
-        self.secret_key = os.getenv('JWT_SECRET_KEY')
+        self.secret_key = os.getenv('JWT_SECRET_KEY', 'your-default-secret-key-change-this-in-production')
+        
+        # Ensure we have a valid string secret key
+        if not self.secret_key or not isinstance(self.secret_key, str):
+            self.secret_key = 'your-default-secret-key-change-this-in-production'
 
     def register_user(self, email, password, first_name=None, last_name=None):
         if self.users.find_one({"email": email}):
@@ -51,11 +55,14 @@ class AuthService:
         return token, user_data
 
     def generate_token(self, user_id):
-        payload = {
-            'user_id': user_id,
-            'exp': datetime.utcnow() + timedelta(days=1)
-        }
-        return jwt.encode(payload, self.secret_key, algorithm='HS256')
+        try:
+            payload = {
+                'user_id': str(user_id),  # Ensure user_id is a string
+                'exp': datetime.utcnow() + timedelta(days=1)
+            }
+            return jwt.encode(payload, self.secret_key, algorithm='HS256')
+        except Exception as e:
+            raise ValueError(f"Failed to generate token: {str(e)}")
 
     def verify_token(self, token):
         try:

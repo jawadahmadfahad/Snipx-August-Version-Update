@@ -1,5 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { Play, Pause, SkipBack, SkipForward, VolumeX, Volume2, Upload, Video, X, UploadCloud as CloudUpload, Smile, Scissors, Trash2, Undo2, Music, Type, Save, Expand, Magnet as Magic, Brain, Share2 } from 'lucide-react';
+import { Upload, Video, X, UploadCloud as CloudUpload, Scissors, Trash2, Undo2, Music, Type, Save, Magnet as Magic, Brain, Volume2 } from 'lucide-react';
+import SubtitleEditor from './SubtitleEditor';
+import VideoPlayer from './VideoPlayer';
+import { ApiService } from '../services/api';
+import toast from 'react-hot-toast';
 
 interface VideoEditorProps {
   videoUrl?: string;
@@ -12,12 +16,16 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
   const [duration, setDuration] = useState(100);
   const [activeTab, setActiveTab] = useState('cutting');
   const [showAudioSettings, setShowAudioSettings] = useState(false);
+  const [showSubtitleEditor, setShowSubtitleEditor] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [videoId, setVideoId] = useState<string | null>(null);
+  const [processedVideoData, setProcessedVideoData] = useState<any>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setSelectedFile(file);
@@ -26,12 +34,12 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
       const objectUrl = URL.createObjectURL(file);
       setPreviewUrl(objectUrl);
       
-      // Simulate upload progress
-      simulateUpload();
+      // Upload the file to backend
+      await uploadFile(file);
     }
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
@@ -41,8 +49,8 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
       const objectUrl = URL.createObjectURL(file);
       setPreviewUrl(objectUrl);
       
-      // Simulate upload progress
-      simulateUpload();
+      // Upload the file to backend
+      await uploadFile(file);
     }
   };
 
@@ -50,19 +58,68 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
     e.preventDefault();
   };
 
-  const simulateUpload = () => {
-    setUploadProgress(0);
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return prev + 10;
+  const uploadFile = async (file: File) => {
+    try {
+      setUploadProgress(0);
+      console.log('Uploading file:', file.name);
+      
+      const response = await ApiService.uploadVideo(file, (progress) => {
+        setUploadProgress(progress);
       });
-    }, 500);
+      
+      console.log('Upload response:', response);
+      setVideoId(response.video_id);
+      toast.success('Video uploaded successfully!');
+      
+    } catch (error) {
+      console.error('Upload failed:', error);
+      toast.error('Upload failed. Please try again.');
+    }
   };
 
+  const handleProcessVideo = async () => {
+    if (!videoId) {
+      toast.error('Please upload a video first');
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      console.log('Processing video:', videoId);
+      
+      const options = {
+        generate_subtitles: true,
+        subtitle_language: 'en',
+        subtitle_style: 'clean',
+        cut_silence: true,
+        enhance_audio: true
+      };
+
+      await ApiService.processVideo(videoId, options);
+      
+      // Get the processed video data
+      const videoData = await ApiService.getVideo(videoId);
+      console.log('Processed video data:', videoData);
+      
+      setProcessedVideoData(videoData);
+      toast.success('Video processed successfully!');
+      
+    } catch (error) {
+      console.error('Processing failed:', error);
+      toast.error('Processing failed. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const clearVideo = () => {
+    setSelectedFile(null);
+    setPreviewUrl(null);
+    setVideoId(null);
+    setProcessedVideoData(null);
+    setUploadProgress(0);
+    setIsProcessing(false);
+  };
   const togglePlay = () => {
     if (videoRef.current) {
       if (isPlaying) {
@@ -174,6 +231,28 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
           {/* AI Tools Section */}
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-gray-900">AI Editing Tools</h3>
+            
+            {/* Debug Test Button */}
+            {videoId && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <button
+                  onClick={async () => {
+                    console.log('🧪 Testing subtitle API for videoId:', videoId);
+                    try {
+                      const subs = await ApiService.getVideoSubtitles(videoId);
+                      console.log('🧪 Test result:', subs);
+                      toast.success(`Found ${subs?.length || 0} subtitle segments`);
+                    } catch (error) {
+                      console.error('🧪 Test failed:', error);
+                      toast.error('Subtitle API test failed: ' + error);
+                    }
+                  }}
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm transition-colors"
+                >
+                  🧪 Test Subtitle API (Debug)
+                </button>
+              </div>
+            )}
 
             {/* Video Summarization */}
             <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
@@ -224,10 +303,28 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
                 <label className="block text-xs text-gray-600">Language</label>
                 <select className="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 text-sm">
                   <option>English</option>
+                  <option>Urdu (اردو)</option>
+                  <option>Roman Urdu</option>
+                  <option>Arabic (العربية)</option>
+                  <option>Hindi (हिंदी)</option>
                   <option>Spanish</option>
                   <option>French</option>
                   <option>German</option>
+                  <option>Chinese (中文)</option>
                   <option>Japanese</option>
+                  <option>Korean (한국어)</option>
+                  <option>Portuguese</option>
+                  <option>Russian (Русский)</option>
+                  <option>Italian</option>
+                  <option>Turkish</option>
+                  <option>Dutch</option>
+                </select>
+                <label className="block text-xs text-gray-600 mt-2">Style</label>
+                <select className="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 text-sm">
+                  <option value="clean">Clean</option>
+                  <option value="casual">Casual</option>
+                  <option value="formal">Formal</option>
+                  <option value="creative">Creative</option>
                 </select>
               </div>
             </div>
@@ -282,9 +379,13 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
           </div>
 
           {/* Process Button */}
-          <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-md font-medium flex items-center justify-center transition-colors">
+          <button 
+            onClick={handleProcessVideo}
+            disabled={!videoId || isProcessing}
+            className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white py-3 px-4 rounded-md font-medium flex items-center justify-center transition-colors"
+          >
             <Magic className="mr-2" size={20} />
-            Process Video
+            {isProcessing ? 'Processing...' : 'Process Video'}
           </button>
         </div>
 
@@ -297,61 +398,12 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
                 <p>Video preview will appear here</p>
               </div>
             ) : (
-              <video 
-                ref={videoRef}
-                src={previewUrl}
-                className="w-full h-full object-contain"
-                onTimeUpdate={handleTimeUpdate}
-                onLoadedMetadata={handleLoadedMetadata}
-                onClick={togglePlay}
+              <VideoPlayer
+                videoUrl={previewUrl}
+                videoId={videoId || undefined}
+                subtitles={processedVideoData?.subtitles}
+                onTimeUpdate={(time) => setCurrentTime(time)}
               />
-            )}
-
-            {/* Video Controls */}
-            {previewUrl && (
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2 text-white text-sm">
-                    <span>{formatTime(currentTime)}</span>
-                    <div className="flex-grow h-1.5 bg-gray-600 rounded-full">
-                      <div 
-                        className="h-full bg-purple-600 rounded-full"
-                        style={{ width: `${(currentTime / duration) * 100}%` }}
-                      ></div>
-                    </div>
-                    <span>{formatTime(duration)}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <button className="text-white hover:text-purple-400 transition-colors">
-                        <SkipBack size={20} />
-                      </button>
-                      <button 
-                        className="bg-white text-purple-900 rounded-full p-2 hover:bg-purple-100 transition-colors"
-                        onClick={togglePlay}
-                      >
-                        {isPlaying ? <Pause size={24} /> : <Play size={24} />}
-                      </button>
-                      <button className="text-white hover:text-purple-400 transition-colors">
-                        <SkipForward size={20} />
-                      </button>
-                      <button 
-                        className="text-white hover:text-purple-400 transition-colors"
-                        onClick={toggleMute}
-                      >
-                        {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-                      </button>
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                      <button className="text-white hover:text-purple-400 transition-colors">
-                        <Expand size={20} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
             )}
           </div>
 
@@ -397,10 +449,28 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
                 <Save className="mr-1" size={16} />
                 Save Project
               </button>
+              <button 
+                onClick={() => setShowSubtitleEditor(true)}
+                className="px-3 py-1 bg-purple-200 hover:bg-purple-300 text-purple-700 rounded-md text-sm flex items-center"
+              >
+                <Type className="mr-1" size={16} />
+                Edit Subtitles
+              </button>
             </div>
           </div>
         </div>
       </div>
+      
+      {/* Subtitle Editor Modal */}
+      {showSubtitleEditor && videoId && (
+        <SubtitleEditor
+          videoId={videoId}
+          onClose={() => setShowSubtitleEditor(false)}
+          onSubtitlesUpdate={(subtitles) => {
+            console.log('Subtitles updated:', subtitles);
+          }}
+        />
+      )}
     </div>
   );
 };

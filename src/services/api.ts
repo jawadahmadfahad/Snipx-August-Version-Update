@@ -2,6 +2,16 @@ import { z } from 'zod';
 
 const API_URL = 'http://localhost:5001/api';
 
+// Interface for subtitle data
+export interface SubtitleData {
+  id: number;
+  start: number;
+  end: number;
+  text: string;
+  language: string;
+  style: string;
+}
+
 // Validation schemas
 const loginSchema = z.object({
   email: z.string().email(),
@@ -115,9 +125,30 @@ export class ApiService {
     });
   }
 
-  static async uploadVideo(file: File) {
+  static async uploadVideo(file: File, onProgress?: (progress: number) => void) {
     const formData = new FormData();
     formData.append('video', file);
+    
+    // If progress callback is provided, simulate progress
+    if (onProgress) {
+      const interval = setInterval(() => {
+        onProgress(Math.min(90, Math.random() * 85 + 10));
+      }, 200);
+      
+      try {
+        const result = await this.request('/upload', {
+          method: 'POST',
+          body: formData
+        });
+        clearInterval(interval);
+        onProgress(100);
+        return result;
+      } catch (error) {
+        clearInterval(interval);
+        throw error;
+      }
+    }
+    
     return this.request('/upload', {
       method: 'POST',
       body: formData
@@ -150,6 +181,10 @@ export class ApiService {
     return this.request(`/videos/${videoId}`);
   }
 
+  static async getVideo(videoId: string) {
+    return this.getVideoStatus(videoId);
+  }
+
   static async getUserVideos() {
     return this.request('/videos');
   }
@@ -177,6 +212,91 @@ export class ApiService {
     return this.request(`/videos/${videoId}/subtitles/${language}/json`);
   }
 
+  // Get video subtitles for player
+  static async getVideoSubtitles(videoId: string): Promise<SubtitleData[]> {
+    try {
+      const response = await this.request(`/videos/${videoId}/subtitles`);
+      console.log('[ApiService] getVideoSubtitles response:', response);
+      
+      // Handle different response formats
+      if (Array.isArray(response)) {
+        return response;
+      } else if (response?.segments && Array.isArray(response.segments)) {
+        return response.segments;
+      } else if (response?.subtitles?.segments && Array.isArray(response.subtitles.segments)) {
+        return response.subtitles.segments;
+      } else {
+        console.log('[ApiService] No valid subtitle segments found');
+        return [];
+      }
+    } catch (error) {
+      console.error('[ApiService] Error fetching subtitles:', error);
+      return [];
+    }
+  }
+
+  // Generate subtitles for a video
+  static async generateSubtitles(videoId: string, options: {
+    language: string;
+    style: string;
+  }) {
+    return this.request(`/videos/${videoId}/subtitles/generate`, {
+      method: 'POST',
+      body: JSON.stringify(options)
+    });
+  }
+
+  // Profile management
+  static async getUserProfile() {
+    return this.request('/profile');
+  }
+
+  static async updateUserProfile(data: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    preferences?: Record<string, any>;
+  }) {
+    return this.request('/profile', {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    });
+  }
+
+  // Admin endpoints
+  static async getAdminStats() {
+    return this.request('/admin/stats');
+  }
+
+  static async getAllUsers() {
+    return this.request('/admin/users');
+  }
+
+  static async getAllVideos() {
+    return this.request('/admin/videos');
+  }
+
+  static async updateUserStatus(userId: string, status: string) {
+    return this.request(`/admin/users/${userId}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status })
+    });
+  }
+
+  // Support ticket
+  static async submitSupportTicket(data: {
+    name: string;
+    email: string;
+    subject: string;
+    description: string;
+    priority: string;
+    type: string;
+  }) {
+    return this.request('/support/tickets', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
   // Download processed video
   static async downloadVideo(videoId: string): Promise<Blob> {
     const token = this.getToken();
