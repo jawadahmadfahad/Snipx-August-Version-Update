@@ -207,36 +207,6 @@ export class ApiService {
     });
   }
 
-  // Real-time thumbnail generation
-  static async generateThumbnails(videoId: string, options: {
-    count?: number;
-    timestamps?: number[];
-    style?: 'auto' | 'manual';
-  } = {}) {
-    return this.request(`/videos/${videoId}/thumbnails/generate`, {
-      method: 'POST',
-      body: JSON.stringify(options)
-    });
-  }
-
-  // Real-time audio enhancement
-  static async enhanceAudio(videoId: string, options: {
-    type?: 'clear' | 'music' | 'full';
-    noiseReduction?: boolean;
-    volumeBoost?: number;
-    equalization?: boolean;
-  } = {}) {
-    return this.request(`/videos/${videoId}/audio/enhance`, {
-      method: 'POST',
-      body: JSON.stringify(options)
-    });
-  }
-
-  // Get processing status with real-time updates
-  static async getProcessingStatus(videoId: string) {
-    return this.request(`/videos/${videoId}/status`);
-  }
-
   // Get subtitle data in JSON format for live preview
   static async getSubtitleData(videoId: string, language: string) {
     return this.request(`/videos/${videoId}/subtitles/${language}/json`);

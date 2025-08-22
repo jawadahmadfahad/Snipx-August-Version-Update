@@ -265,24 +265,13 @@ class VideoService:
         try:
             cap = cv2.VideoCapture(video.filepath)
             total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            cap.set(cv2.CAP_PROP_POS_FRAMES, total_frames // 2)
+            ret, frame = cap.read()
             
-            # Generate multiple thumbnails at different timestamps
-            thumbnails = []
-            timestamps = [0.1, 0.3, 0.5, 0.7, 0.9]  # 10%, 30%, 50%, 70%, 90% of video
-            
-            for i, timestamp in enumerate(timestamps):
-                frame_number = int(total_frames * timestamp)
-                cap.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
-                ret, frame = cap.read()
-                
-                if ret:
-                    thumbnail_path = f"{os.path.splitext(video.filepath)[0]}_thumb_{i+1}.jpg"
-                    cv2.imwrite(thumbnail_path, frame)
-                    thumbnails.append(thumbnail_path)
-            
-            video.outputs["thumbnails"] = thumbnails
-            if thumbnails:
-                video.outputs["thumbnail"] = thumbnails[2]  # Use middle thumbnail as primary
+            if ret:
+                thumbnail_path = f"{os.path.splitext(video.filepath)[0]}_thumb.jpg"
+                cv2.imwrite(thumbnail_path, frame)
+                video.outputs["thumbnail"] = thumbnail_path
             
             cap.release()
         except Exception as e:

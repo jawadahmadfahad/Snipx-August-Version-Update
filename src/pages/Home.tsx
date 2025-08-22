@@ -1,18 +1,18 @@
-import Hero3D from '../components/Hero3D';
-import Features3D from '../components/Features3D';
+import Hero from '../components/Hero';
+import Features from '../components/Features';
 import HowItWorks from '../components/HowItWorks';
 import Footer from '../components/Footer';
-import VideoEditor3D from '../components/VideoEditor3D';
+import VideoEditor from '../components/VideoEditor';
 
 const Home = () => {
   return (
     <>
-      <Hero3D />
-      <Features3D />
+      <Hero />
+      <Features />
       <HowItWorks />
       <div className="bg-white py-12">
         <div className="container mx-auto px-4">
-          <VideoEditor3D />
+          <VideoEditor />
         </div>
       </div>
       <Footer />
