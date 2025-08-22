@@ -15,7 +15,8 @@ import {
   Video,
   Scissors,
   Type,
-  Volume2
+  Volume2,
+  Sparkles
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ApiService } from '../services/api';
@@ -235,60 +236,90 @@ const Help = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4 max-w-6xl">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Help & Support</h1>
-          <p className="text-xl text-gray-600">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 py-8 relative overflow-hidden">
+      {/* 3D Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Floating 3D Spheres */}
+        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-xl animate-float-3d transform-gpu" 
+             style={{ transform: 'translateZ(0) rotateX(45deg) rotateY(45deg)' }} />
+        <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-lg animate-float-3d-delayed transform-gpu"
+             style={{ transform: 'translateZ(0) rotateX(-30deg) rotateY(60deg)' }} />
+        <div className="absolute bottom-32 left-1/4 w-40 h-40 bg-gradient-to-br from-green-400/15 to-teal-400/15 rounded-full blur-2xl animate-pulse-3d transform-gpu"
+             style={{ transform: 'translateZ(0) rotateX(60deg) rotateY(-45deg)' }} />
+        
+        {/* 3D Geometric Shapes */}
+        <div className="absolute top-1/3 right-1/4 w-16 h-16 bg-gradient-to-br from-orange-400/30 to-red-400/30 transform rotate-45 animate-spin-3d blur-sm" />
+        <div className="absolute bottom-1/4 right-1/3 w-12 h-12 bg-gradient-to-br from-indigo-400/30 to-purple-400/30 transform rotate-12 animate-bounce-3d blur-sm" />
+        
+        {/* Floating Sparkles */}
+        <div className="absolute top-1/4 left-1/3 animate-sparkle-3d">
+          <Sparkles className="text-purple-400/40 w-6 h-6 transform-gpu" style={{ transform: 'rotateZ(45deg)' }} />
+        </div>
+        <div className="absolute top-2/3 right-1/2 animate-sparkle-3d-delayed">
+          <Sparkles className="text-pink-400/40 w-4 h-4 transform-gpu" style={{ transform: 'rotateZ(-30deg)' }} />
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 max-w-6xl relative z-10">
+        {/* Header with 3D Effects */}
+        <div className="text-center mb-8 animate-slide-up-3d">
+          <div className="inline-flex items-center px-6 py-3 bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-white/20 mb-6 transform hover:scale-105 transition-all duration-300 hover:shadow-xl">
+            <HelpCircle className="text-purple-600 mr-3 animate-pulse" size={24} />
+            <span className="text-purple-700 font-medium">Help & Support Center</span>
+          </div>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent animate-text-shimmer">
+            Help & Support
+          </h1>
+          <p className="text-xl text-gray-600 animate-fade-in-up-3d">
             Find answers, get help, and learn how to make the most of SnipX
           </p>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="bg-white rounded-lg shadow-sm mb-6">
-          <nav className="flex space-x-8 px-6">
+        {/* Navigation Tabs with 3D Effects */}
+        <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl mb-6 border border-white/20 animate-slide-in-3d">
+          <nav className="flex space-x-8 px-6 overflow-x-auto">
             {[
               { id: 'faq', label: 'FAQ', icon: HelpCircle },
               { id: 'tutorials', label: 'Tutorials', icon: Book },
               { id: 'chat', label: 'Live Chat', icon: MessageCircle },
               { id: 'support', label: 'Support Ticket', icon: Bug }
-            ].map(tab => (
+            ].map((tab, index) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center py-4 px-2 border-b-2 font-medium text-sm ${
+                className={`flex items-center py-4 px-2 border-b-2 font-medium text-sm transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 ${
                   activeTab === tab.id
-                    ? 'border-purple-500 text-purple-600'
+                    ? 'border-purple-500 text-purple-600 shadow-lg'
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
+                style={{ animationDelay: `${index * 100}ms` }}
               >
-                <tab.icon size={16} className="mr-2" />
+                <tab.icon size={16} className="mr-2 animate-pulse" />
                 {tab.label}
               </button>
             ))}
           </nav>
         </div>
 
-        {/* Tab Content */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        {/* Tab Content with 3D Animations */}
+        <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-white/20 animate-content-reveal-3d">
           {activeTab === 'faq' && (
             <div className="space-y-6">
               <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                <div className="flex-1 relative group">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 group-hover:text-purple-500 transition-colors" size={16} />
                   <input
                     type="text"
                     placeholder="Search FAQs..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
                   />
                 </div>
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
                 >
                   {categories.map(category => (
                     <option key={category.id} value={category.id}>
@@ -299,21 +330,23 @@ const Help = () => {
               </div>
 
               <div className="space-y-4">
-                {filteredFAQs.map(faq => (
-                  <div key={faq.id} className="border border-gray-200 rounded-lg">
+                {filteredFAQs.map((faq, index) => (
+                  <div 
+                    key={faq.id} 
+                    className="border border-gray-200 rounded-xl bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02] animate-slide-in-stagger-3d"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
                     <button
                       onClick={() => setExpandedFAQ(expandedFAQ === faq.id ? null : faq.id)}
-                      className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50"
+                      className="w-full flex items-center justify-between p-6 text-left hover:bg-purple-50/50 rounded-xl transition-all duration-300"
                     >
-                      <span className="font-medium text-gray-900">{faq.question}</span>
-                      {expandedFAQ === faq.id ? (
+                      <span className="font-medium text-gray-900 pr-4">{faq.question}</span>
+                      <div className="transform transition-transform duration-300" style={{ transform: expandedFAQ === faq.id ? 'rotateZ(180deg)' : 'rotateZ(0deg)' }}>
                         <ChevronDown size={20} className="text-gray-500" />
-                      ) : (
-                        <ChevronRight size={20} className="text-gray-500" />
-                      )}
+                      </div>
                     </button>
                     {expandedFAQ === faq.id && (
-                      <div className="px-4 pb-4 text-gray-600">
+                      <div className="px-6 pb-6 text-gray-600 animate-expand-3d">
                         {faq.answer}
                       </div>
                     )}
@@ -322,8 +355,8 @@ const Help = () => {
               </div>
 
               {filteredFAQs.length === 0 && (
-                <div className="text-center py-8">
-                  <HelpCircle className="mx-auto text-gray-400 mb-4" size={48} />
+                <div className="text-center py-12 animate-fade-in-3d">
+                  <HelpCircle className="mx-auto text-gray-400 mb-4 animate-bounce-3d" size={48} />
                   <p className="text-gray-500">No FAQs found matching your search.</p>
                 </div>
               )}
@@ -332,16 +365,20 @@ const Help = () => {
 
           {activeTab === 'tutorials' && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-gray-900">Video Tutorials</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 animate-slide-in-3d">Video Tutorials</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {tutorials.map(tutorial => (
-                  <div key={tutorial.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                {tutorials.map((tutorial, index) => (
+                  <div 
+                    key={tutorial.id} 
+                    className="border border-gray-200 rounded-xl p-6 hover:shadow-xl transition-all duration-500 bg-white/80 backdrop-blur-sm transform hover:-translate-y-2 hover:scale-105 animate-card-float-3d"
+                    style={{ animationDelay: `${index * 150}ms` }}
+                  >
                     <div className="flex items-start">
-                      <div className="flex-shrink-0 mr-4">
+                      <div className="flex-shrink-0 mr-4 transform hover:scale-110 transition-transform duration-300">
                         {tutorial.icon}
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">
+                        <h3 className="text-lg font-medium text-gray-900 mb-2 hover:text-purple-600 transition-colors">
                           {tutorial.title}
                         </h3>
                         <p className="text-gray-600 mb-3">{tutorial.description}</p>
@@ -350,7 +387,7 @@ const Help = () => {
                             <Clock size={14} className="mr-1" />
                             {tutorial.duration}
                           </span>
-                          <button className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors">
+                          <button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
                             Watch Tutorial
                           </button>
                         </div>
@@ -360,16 +397,16 @@ const Help = () => {
                 ))}
               </div>
 
-              <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6 animate-slide-up-3d">
                 <h3 className="text-lg font-medium text-purple-900 mb-2">Need More Help?</h3>
                 <p className="text-purple-700 mb-4">
                   Can't find what you're looking for? Check out our comprehensive documentation or contact our support team.
                 </p>
                 <div className="flex space-x-4">
-                  <button className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors">
+                  <button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
                     View Documentation
                   </button>
-                  <button className="border border-purple-600 text-purple-600 px-4 py-2 rounded-md hover:bg-purple-50 transition-colors">
+                  <button className="border-2 border-purple-600 text-purple-600 px-6 py-3 rounded-lg hover:bg-purple-50 transition-all duration-300 transform hover:scale-105">
                     Contact Support
                   </button>
                 </div>
@@ -380,25 +417,26 @@ const Help = () => {
           {activeTab === 'chat' && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900">Live Chat Assistant</h2>
-                <div className="flex items-center text-green-600">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                  <span className="text-sm">Online</span>
+                <h2 className="text-2xl font-semibold text-gray-900 animate-slide-in-3d">Live Chat Assistant</h2>
+                <div className="flex items-center text-green-600 animate-pulse-3d">
+                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-ping"></div>
+                  <span className="text-sm font-medium">Online</span>
                 </div>
               </div>
 
-              <div className="border border-gray-200 rounded-lg">
-                <div className="h-96 overflow-y-auto p-4 space-y-4">
-                  {chatMessages.map(message => (
+              <div className="border border-gray-200 rounded-xl bg-white/80 backdrop-blur-sm shadow-lg animate-slide-up-3d">
+                <div className="h-96 overflow-y-auto p-6 space-y-4">
+                  {chatMessages.map((message, index) => (
                     <div
                       key={message.id}
-                      className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                      className={`flex animate-message-slide-3d ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                      style={{ animationDelay: `${index * 100}ms` }}
                     >
                       <div
-                        className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                        className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-300 ${
                           message.sender === 'user'
-                            ? 'bg-purple-600 text-white'
-                            : 'bg-gray-100 text-gray-900'
+                            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                            : 'bg-white border border-gray-200 text-gray-900'
                         }`}
                       >
                         <p className="text-sm">{message.message}</p>
@@ -412,19 +450,19 @@ const Help = () => {
                   ))}
                 </div>
 
-                <div className="border-t border-gray-200 p-4">
-                  <div className="flex space-x-2">
+                <div className="border-t border-gray-200 p-4 bg-gray-50/50 rounded-b-xl">
+                  <div className="flex space-x-3">
                     <input
                       type="text"
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                       placeholder="Type your message..."
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
                     />
                     <button
                       onClick={handleSendMessage}
-                      className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors"
+                      className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
                     >
                       <Send size={16} />
                     </button>
@@ -432,7 +470,7 @@ const Help = () => {
                 </div>
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-4 animate-slide-in-3d">
                 <h3 className="text-sm font-medium text-blue-900 mb-2">Quick Actions</h3>
                 <div className="flex flex-wrap gap-2">
                   {[
@@ -440,11 +478,12 @@ const Help = () => {
                     'Subtitle generation help',
                     'Processing time info',
                     'Pricing information'
-                  ].map(action => (
+                  ].map((action, index) => (
                     <button
                       key={action}
                       onClick={() => setNewMessage(action)}
-                      className="text-xs bg-blue-100 text-blue-800 px-3 py-1 rounded-full hover:bg-blue-200 transition-colors"
+                      className="text-xs bg-blue-100 text-blue-800 px-3 py-2 rounded-full hover:bg-blue-200 transition-all duration-300 transform hover:scale-105 animate-bounce-in-3d"
+                      style={{ animationDelay: `${index * 100}ms` }}
                     >
                       {action}
                     </button>
@@ -457,13 +496,13 @@ const Help = () => {
           {activeTab === 'support' && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900">Submit Support Ticket</h2>
+                <h2 className="text-2xl font-semibold text-gray-900 animate-slide-in-3d">Submit Support Ticket</h2>
                 <div className="flex items-center space-x-4 text-sm text-gray-600">
-                  <div className="flex items-center">
+                  <div className="flex items-center animate-float-3d">
                     <Mail size={16} className="mr-1" />
                     support@snipx.com
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex items-center animate-float-3d-delayed">
                     <Phone size={16} className="mr-1" />
                     +1 (555) 123-4567
                   </div>
@@ -471,9 +510,9 @@ const Help = () => {
               </div>
 
               {!isAuthenticated ? (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
+                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-6 text-center animate-slide-up-3d">
                   <div className="flex justify-center mb-4">
-                    <Bug className="h-12 w-12 text-blue-600" />
+                    <Bug className="h-12 w-12 text-blue-600 animate-bounce-3d" />
                   </div>
                   <h3 className="text-lg font-semibold text-blue-900 mb-2">
                     Login Required
@@ -483,134 +522,134 @@ const Help = () => {
                   </p>
                   <button
                     onClick={() => window.location.href = '/login'}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium transition-colors"
+                    className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
                   >
                     Go to Login
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSupportSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
+                <form onSubmit={handleSupportSubmit} className="space-y-6 animate-form-reveal-3d">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="animate-slide-in-left-3d">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Full Name
+                      </label>
+                      <input
+                        type="text"
+                        value={supportForm.name}
+                        onChange={(e) => setSupportForm({...supportForm, name: e.target.value})}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
+                        required
+                      />
+                    </div>
+
+                    <div className="animate-slide-in-right-3d">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        value={supportForm.email}
+                        onChange={(e) => setSupportForm({...supportForm, email: e.target.value})}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="animate-slide-in-left-3d" style={{ animationDelay: '200ms' }}>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Issue Type
+                      </label>
+                      <select
+                        value={supportForm.type}
+                        onChange={(e) => setSupportForm({...supportForm, type: e.target.value})}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
+                      >
+                        <option value="bug">Bug Report</option>
+                        <option value="feature">Feature Request</option>
+                        <option value="account">Account Issue</option>
+                        <option value="billing">Billing Question</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+
+                    <div className="animate-slide-in-right-3d" style={{ animationDelay: '200ms' }}>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Priority
+                      </label>
+                      <select
+                        value={supportForm.priority}
+                        onChange={(e) => setSupportForm({...supportForm, priority: e.target.value})}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
+                      >
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="urgent">Urgent</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="animate-slide-up-3d" style={{ animationDelay: '300ms' }}>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Full Name
+                      Subject
                     </label>
                     <input
                       type="text"
-                      value={supportForm.name}
-                      onChange={(e) => setSupportForm({...supportForm, name: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={supportForm.subject}
+                      onChange={(e) => setSupportForm({...supportForm, subject: e.target.value})}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
                       required
                     />
                   </div>
 
-                  <div>
+                  <div className="animate-slide-up-3d" style={{ animationDelay: '400ms' }}>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Email Address
+                      Description
                     </label>
-                    <input
-                      type="email"
-                      value={supportForm.email}
-                      onChange={(e) => setSupportForm({...supportForm, email: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    <textarea
+                      value={supportForm.description}
+                      onChange={(e) => setSupportForm({...supportForm, description: e.target.value})}
+                      rows={6}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg resize-none"
+                      placeholder="Please provide as much detail as possible about your issue..."
                       required
                     />
                   </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Issue Type
-                    </label>
-                    <select
-                      value={supportForm.type}
-                      onChange={(e) => setSupportForm({...supportForm, type: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  <div className="flex justify-end animate-slide-up-3d" style={{ animationDelay: '500ms' }}>
+                    <button
+                      type="submit"
+                      disabled={isSubmittingTicket}
+                      className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 flex items-center disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 hover:shadow-lg"
                     >
-                      <option value="bug">Bug Report</option>
-                      <option value="feature">Feature Request</option>
-                      <option value="account">Account Issue</option>
-                      <option value="billing">Billing Question</option>
-                      <option value="other">Other</option>
-                    </select>
+                      <FileText size={16} className="mr-2" />
+                      {isSubmittingTicket ? 'Submitting...' : 'Submit Ticket'}
+                    </button>
                   </div>
+                </form>
+              )}
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Priority
-                    </label>
-                    <select
-                      value={supportForm.priority}
-                      onChange={(e) => setSupportForm({...supportForm, priority: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    >
-                      <option value="low">Low</option>
-                      <option value="medium">Medium</option>
-                      <option value="high">High</option>
-                      <option value="urgent">Urgent</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Subject
-                  </label>
-                  <input
-                    type="text"
-                    value={supportForm.subject}
-                    onChange={(e) => setSupportForm({...supportForm, subject: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Description
-                  </label>
-                  <textarea
-                    value={supportForm.description}
-                    onChange={(e) => setSupportForm({...supportForm, description: e.target.value})}
-                    rows={6}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    placeholder="Please provide as much detail as possible about your issue..."
-                    required
-                  />
-                </div>
-
-                <div className="flex justify-end">
-                  <button
-                    type="submit"
-                    disabled={isSubmittingTicket}
-                    className="bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <FileText size={16} className="mr-2" />
-                    {isSubmittingTicket ? 'Submitting...' : 'Submit Ticket'}
-                  </button>
-                </div>
-              </form>
-
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h3 className="text-sm font-medium text-gray-900 mb-2">Response Times</h3>
+              <div className="bg-gradient-to-r from-gray-50 to-slate-50 border border-gray-200 rounded-xl p-6 animate-slide-up-3d">
+                <h3 className="text-sm font-medium text-gray-900 mb-4">Response Times</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                  <div>
-                    <span className="font-medium text-red-600">Urgent:</span>
-                    <p className="text-gray-600">2-4 hours</p>
-                  </div>
-                  <div>
-                    <span className="font-medium text-orange-600">High:</span>
-                    <p className="text-gray-600">4-8 hours</p>
-                  </div>
-                  <div>
-                    <span className="font-medium text-yellow-600">Medium:</span>
-                    <p className="text-gray-600">12-24 hours</p>
-                  </div>
-                  <div>
-                    <span className="font-medium text-green-600">Low:</span>
-                    <p className="text-gray-600">24-48 hours</p>
-                  </div>
+                  {[
+                    { priority: 'Urgent', time: '2-4 hours', color: 'red' },
+                    { priority: 'High', time: '4-8 hours', color: 'orange' },
+                    { priority: 'Medium', time: '12-24 hours', color: 'yellow' },
+                    { priority: 'Low', time: '24-48 hours', color: 'green' }
+                  ].map((item, index) => (
+                    <div 
+                      key={item.priority}
+                      className="animate-bounce-in-3d"
+                      style={{ animationDelay: `${index * 100}ms` }}
+                    >
+                      <span className={`font-medium text-${item.color}-600`}>{item.priority}:</span>
+                      <p className="text-gray-600">{item.time}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

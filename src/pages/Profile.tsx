@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User, Edit3, Download, Clock, Settings, Shield, Eye, Trash2, Save } from 'lucide-react';
+import { User, Edit3, Download, Clock, Settings, Shield, Eye, Trash2, Save, Sparkles } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { ApiService } from '../services/api';
 import toast from 'react-hot-toast';
@@ -41,10 +41,23 @@ const Profile = () => {
     email: ''
   });
   const [loading, setLoading] = useState(true);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     loadProfileData();
     loadVideoHistory();
+  }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100,
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
   const loadProfileData = async () => {
@@ -162,158 +175,181 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="animate-spin-3d rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4 max-w-6xl">
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-8">
-            <div className="flex items-center">
-              <div className="bg-white rounded-full p-3 mr-4">
-                <User className="text-purple-600" size={32} />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 py-8 relative overflow-hidden">
+      {/* 3D Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Floating 3D Profile Elements */}
+        <div 
+          className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-xl animate-float-3d transform-gpu"
+          style={{
+            transform: `translateZ(0) rotateX(45deg) rotateY(${mousePosition.x * 0.1}deg)`,
+            transition: 'transform 0.3s ease-out'
+          }}
+        />
+        <div 
+          className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-lg animate-float-3d-delayed transform-gpu"
+          style={{
+            transform: `translateZ(0) rotateX(-30deg) rotateY(${mousePosition.y * 0.1}deg)`,
+            transition: 'transform 0.3s ease-out'
+          }}
+        />
+        <div 
+          className="absolute bottom-32 left-1/4 w-40 h-40 bg-gradient-to-br from-green-400/15 to-teal-400/15 rounded-full blur-2xl animate-pulse-3d transform-gpu"
+          style={{
+            transform: `translateZ(0) rotateX(60deg) rotateY(-${mousePosition.x * 0.05}deg)`,
+            transition: 'transform 0.3s ease-out'
+          }}
+        />
+        
+        {/* 3D User Icons */}
+        <div className="absolute top-1/3 right-1/4 w-16 h-16 bg-gradient-to-br from-orange-400/30 to-red-400/30 transform rotate-45 animate-spin-3d blur-sm" />
+        <div className="absolute bottom-1/4 right-1/3 w-12 h-12 bg-gradient-to-br from-indigo-400/30 to-purple-400/30 transform rotate-12 animate-bounce-3d blur-sm" />
+        
+        {/* Floating Sparkles */}
+        <div className="absolute top-1/4 left-1/3 animate-sparkle-3d">
+          <Sparkles className="text-purple-400/40 w-6 h-6 transform-gpu" style={{ transform: 'rotateZ(45deg)' }} />
+        </div>
+        <div className="absolute top-2/3 right-1/2 animate-sparkle-3d-delayed">
+          <Sparkles className="text-pink-400/40 w-4 h-4 transform-gpu" style={{ transform: 'rotateZ(-30deg)' }} />
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 max-w-6xl relative z-10">
+        <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden border border-white/20 animate-slide-up-3d">
+          {/* Header with 3D Effects */}
+          <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 px-8 py-12 relative overflow-hidden">
+            {/* 3D Background Pattern */}
+            <div className="absolute inset-0 opacity-20">
+              <div className="absolute top-4 left-4 w-8 h-8 border-2 border-white rounded-full animate-float-3d"></div>
+              <div className="absolute top-8 right-8 w-6 h-6 border-2 border-white transform rotate-45 animate-bounce-3d"></div>
+              <div className="absolute bottom-4 left-1/3 w-4 h-4 bg-white rounded-full animate-pulse-3d"></div>
+            </div>
+            
+            <div className="flex items-center relative z-10">
+              <div className="bg-white/20 backdrop-blur-md rounded-full p-4 mr-6 shadow-lg transform hover:scale-110 transition-all duration-300 animate-float-3d">
+                <User className="text-white" size={40} />
               </div>
               <div className="text-white">
-                <h1 className="text-2xl font-bold">
+                <h1 className="text-3xl font-bold mb-2 animate-slide-in-left-3d">
                   {profile?.firstName} {profile?.lastName}
                 </h1>
-                <p className="opacity-90">{profile?.email}</p>
-                <p className="text-sm opacity-75">
+                <p className="opacity-90 text-lg animate-slide-in-left-3d" style={{ animationDelay: '200ms' }}>
+                  {profile?.email}
+                </p>
+                <p className="text-sm opacity-75 mt-1 animate-slide-in-left-3d" style={{ animationDelay: '400ms' }}>
                   Member since {new Date(profile?.joinDate || '').toLocaleDateString()}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Navigation Tabs */}
-          <div className="border-b border-gray-200">
-            <nav className="flex space-x-8 px-6">
+          {/* Navigation Tabs with 3D Effects */}
+          <div className="border-b border-gray-200 bg-white/50 backdrop-blur-sm">
+            <nav className="flex space-x-8 px-8 overflow-x-auto">
               {[
                 { id: 'profile', label: 'Profile', icon: User },
                 { id: 'history', label: 'Video History', icon: Clock },
                 { id: 'settings', label: 'Settings', icon: Settings }
-              ].map(tab => (
+              ].map((tab, index) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center py-4 px-2 border-b-2 font-medium text-sm ${
+                  className={`flex items-center py-4 px-2 border-b-2 font-medium text-sm transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 animate-slide-in-3d ${
                     activeTab === tab.id
-                      ? 'border-purple-500 text-purple-600'
+                      ? 'border-purple-500 text-purple-600 shadow-lg'
                       : 'border-transparent text-gray-500 hover:text-gray-700'
                   }`}
+                  style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <tab.icon size={16} className="mr-2" />
+                  <tab.icon size={16} className="mr-2 animate-pulse" />
                   {tab.label}
                 </button>
               ))}
             </nav>
           </div>
 
-          {/* Tab Content */}
-          <div className="p-6">
+          {/* Tab Content with 3D Animations */}
+          <div className="p-8 animate-content-reveal-3d">
             {activeTab === 'profile' && (
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-xl font-semibold text-gray-900">Profile Information</h2>
+                  <h2 className="text-2xl font-semibold text-gray-900 animate-slide-in-3d">Profile Information</h2>
                   <button
                     onClick={() => setIsEditing(!isEditing)}
-                    className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+                    className="flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg btn-3d"
                   >
                     <Edit3 size={16} className="mr-2" />
                     {isEditing ? 'Cancel' : 'Edit Profile'}
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        First Name
-                      </label>
-                      {isEditing ? (
-                        <input
-                          type="text"
-                          value={editForm.firstName}
-                          onChange={(e) => setEditForm({...editForm, firstName: e.target.value})}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                        />
-                      ) : (
-                        <p className="text-gray-900">{profile?.firstName}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Last Name
-                      </label>
-                      {isEditing ? (
-                        <input
-                          type="text"
-                          value={editForm.lastName}
-                          onChange={(e) => setEditForm({...editForm, lastName: e.target.value})}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                        />
-                      ) : (
-                        <p className="text-gray-900">{profile?.lastName}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Email Address
-                      </label>
-                      {isEditing ? (
-                        <input
-                          type="email"
-                          value={editForm.email}
-                          onChange={(e) => setEditForm({...editForm, email: e.target.value})}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                        />
-                      ) : (
-                        <p className="text-gray-900">{profile?.email}</p>
-                      )}
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-6">
+                    {['firstName', 'lastName', 'email'].map((field, index) => (
+                      <div key={field} className="animate-slide-in-left-3d" style={{ animationDelay: `${index * 100}ms` }}>
+                        <label className="block text-sm font-medium text-gray-700 mb-2 capitalize">
+                          {field.replace(/([A-Z])/g, ' $1').trim()}
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type={field === 'email' ? 'email' : 'text'}
+                            value={editForm[field as keyof typeof editForm]}
+                            onChange={(e) => setEditForm({...editForm, [field]: e.target.value})}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
+                          />
+                        ) : (
+                          <p className="text-gray-900 bg-gray-50 px-4 py-3 rounded-xl">
+                            {profile?.[field as keyof UserProfile] as string}
+                          </p>
+                        )}
+                      </div>
+                    ))}
                   </div>
 
-                  <div className="space-y-4">
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h3 className="font-medium text-gray-900 mb-3">Account Statistics</h3>
-                      <div className="space-y-2">
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Total Videos Processed</span>
-                          <span className="font-medium">{profile?.totalVideos}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Processing Time</span>
-                          <span className="font-medium">{profile?.totalProcessingTime} minutes</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Member Since</span>
-                          <span className="font-medium">
-                            {new Date(profile?.joinDate || '').toLocaleDateString()}
-                          </span>
-                        </div>
+                  <div className="space-y-6">
+                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 shadow-lg border border-purple-100 animate-card-float-3d">
+                      <h3 className="font-medium text-purple-900 mb-4 flex items-center">
+                        <Shield className="mr-2" size={20} />
+                        Account Statistics
+                      </h3>
+                      <div className="space-y-4">
+                        {[
+                          { label: 'Total Videos Processed', value: profile?.totalVideos, delay: '0ms' },
+                          { label: 'Processing Time', value: `${profile?.totalProcessingTime} minutes`, delay: '100ms' },
+                          { label: 'Member Since', value: new Date(profile?.joinDate || '').toLocaleDateString(), delay: '200ms' }
+                        ].map((stat, index) => (
+                          <div 
+                            key={stat.label}
+                            className="flex justify-between items-center animate-bounce-in-3d"
+                            style={{ animationDelay: stat.delay }}
+                          >
+                            <span className="text-purple-700">{stat.label}</span>
+                            <span className="font-semibold text-purple-900">{stat.value}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {isEditing && (
-                  <div className="flex justify-end space-x-3">
+                  <div className="flex justify-end space-x-4 animate-slide-up-3d">
                     <button
                       onClick={() => setIsEditing(false)}
-                      className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                      className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleSaveProfile}
-                      className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+                      className="flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg btn-3d"
                     >
                       <Save size={16} className="mr-2" />
                       Save Changes
@@ -325,32 +361,30 @@ const Profile = () => {
 
             {activeTab === 'history' && (
               <div className="space-y-6">
-                <h2 className="text-xl font-semibold text-gray-900">Video History</h2>
+                <h2 className="text-2xl font-semibold text-gray-900 animate-slide-in-3d">Video History</h2>
                 
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                <div className="overflow-x-auto animate-slide-up-3d">
+                  <table className="min-w-full divide-y divide-gray-200 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg">
+                    <thead className="bg-gradient-to-r from-purple-50 to-pink-50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Video
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Status
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Processing
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Date
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Actions
-                        </th>
+                        {['Video', 'Status', 'Processing', 'Date', 'Actions'].map((header, index) => (
+                          <th 
+                            key={header}
+                            className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider animate-slide-in-stagger-3d"
+                            style={{ animationDelay: `${index * 100}ms` }}
+                          >
+                            {header}
+                          </th>
+                        ))}
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {videoHistory.map((video) => (
-                        <tr key={video.id}>
+                    <tbody className="bg-white/50 backdrop-blur-sm divide-y divide-gray-200">
+                      {videoHistory.map((video, index) => (
+                        <tr 
+                          key={video.id} 
+                          className="hover:bg-purple-50/50 transition-all duration-300 animate-slide-in-stagger-3d"
+                          style={{ animationDelay: `${index * 150}ms` }}
+                        >
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div>
                               <div className="text-sm font-medium text-gray-900">
@@ -362,7 +396,7 @@ const Profile = () => {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full transform hover:scale-105 transition-all duration-300 ${
                               video.status === 'completed' 
                                 ? 'bg-green-100 text-green-800'
                                 : video.status === 'processing'
@@ -377,7 +411,7 @@ const Profile = () => {
                               {video.processedOptions?.map((option) => (
                                 <span
                                   key={option}
-                                  className="inline-flex px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded"
+                                  className="inline-flex px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full transform hover:scale-105 transition-all duration-300"
                                 >
                                   {option.replace('_', ' ')}
                                 </span>
@@ -388,16 +422,19 @@ const Profile = () => {
                             {new Date(video.uploadDate).toLocaleDateString()}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div className="flex space-x-2">
-                              <button className="text-purple-600 hover:text-purple-900">
-                                <Eye size={16} />
-                              </button>
-                              <button className="text-green-600 hover:text-green-900">
-                                <Download size={16} />
-                              </button>
-                              <button className="text-red-600 hover:text-red-900">
-                                <Trash2 size={16} />
-                              </button>
+                            <div className="flex space-x-3">
+                              {[
+                                { icon: Eye, color: 'text-purple-600 hover:text-purple-900' },
+                                { icon: Download, color: 'text-green-600 hover:text-green-900' },
+                                { icon: Trash2, color: 'text-red-600 hover:text-red-900' }
+                              ].map((action, actionIndex) => (
+                                <button 
+                                  key={actionIndex}
+                                  className={`${action.color} transform hover:scale-110 transition-all duration-300`}
+                                >
+                                  <action.icon size={16} />
+                                </button>
+                              ))}
                             </div>
                           </td>
                         </tr>
@@ -409,22 +446,26 @@ const Profile = () => {
             )}
 
             {activeTab === 'settings' && (
-              <div className="space-y-6">
-                <h2 className="text-xl font-semibold text-gray-900">Settings & Preferences</h2>
+              <div className="space-y-8">
+                <h2 className="text-2xl font-semibold text-gray-900 animate-slide-in-3d">Settings & Preferences</h2>
                 
-                <div className="space-y-6">
-                  <div className="bg-gray-50 rounded-lg p-6">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Processing Preferences</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
+                <div className="space-y-8">
+                  {/* Processing Preferences */}
+                  <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-8 shadow-lg border border-purple-100 animate-card-float-3d">
+                    <h3 className="text-lg font-medium text-purple-900 mb-6 flex items-center">
+                      <Settings className="mr-3" size={24} />
+                      Processing Preferences
+                    </h3>
+                    <div className="space-y-6">
+                      <div className="flex items-center justify-between animate-slide-in-left-3d">
                         <div>
-                          <label className="text-sm font-medium text-gray-700">Default Language</label>
-                          <p className="text-sm text-gray-500">Default language for subtitle generation</p>
+                          <label className="text-sm font-medium text-purple-800">Default Language</label>
+                          <p className="text-sm text-purple-600">Default language for subtitle generation</p>
                         </div>
                         <select
                           value={profile?.preferences.defaultLanguage}
                           onChange={(e) => handlePreferenceChange('defaultLanguage', e.target.value)}
-                          className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          className="px-4 py-2 border border-purple-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
                         >
                           <option value="en">English</option>
                           <option value="ur">Urdu</option>
@@ -433,47 +474,41 @@ const Profile = () => {
                         </select>
                       </div>
 
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">Auto Enhance Audio</label>
-                          <p className="text-sm text-gray-500">Automatically enhance audio quality</p>
+                      {[
+                        { key: 'autoEnhanceAudio', label: 'Auto Enhance Audio', desc: 'Automatically enhance audio quality' },
+                        { key: 'generateThumbnails', label: 'Generate Thumbnails', desc: 'Automatically generate video thumbnails' }
+                      ].map((setting, index) => (
+                        <div 
+                          key={setting.key}
+                          className="flex items-center justify-between animate-slide-in-right-3d"
+                          style={{ animationDelay: `${index * 100}ms` }}
+                        >
+                          <div>
+                            <label className="text-sm font-medium text-purple-800">{setting.label}</label>
+                            <p className="text-sm text-purple-600">{setting.desc}</p>
+                          </div>
+                          <label className="relative inline-flex items-center cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={profile?.preferences[setting.key as keyof typeof profile.preferences] as boolean}
+                              onChange={(e) => handlePreferenceChange(setting.key, e.target.checked)}
+                              className="sr-only peer"
+                            />
+                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600 transform hover:scale-105 transition-all duration-300"></div>
+                          </label>
                         </div>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={profile?.preferences.autoEnhanceAudio}
-                            onChange={(e) => handlePreferenceChange('autoEnhanceAudio', e.target.checked)}
-                            className="sr-only peer"
-                          />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-                        </label>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">Generate Thumbnails</label>
-                          <p className="text-sm text-gray-500">Automatically generate video thumbnails</p>
-                        </div>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={profile?.preferences.generateThumbnails}
-                            onChange={(e) => handlePreferenceChange('generateThumbnails', e.target.checked)}
-                            className="sr-only peer"
-                          />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-                        </label>
-                      </div>
+                      ))}
                     </div>
                   </div>
 
-                  <div className="bg-gray-50 rounded-lg p-6">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Notifications</h3>
+                  {/* Notifications */}
+                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-8 shadow-lg border border-blue-100 animate-card-float-3d" style={{ animationDelay: '200ms' }}>
+                    <h3 className="text-lg font-medium text-blue-900 mb-6">Notifications</h3>
                     <div className="space-y-4">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between animate-slide-in-3d">
                         <div>
-                          <label className="text-sm font-medium text-gray-700">Email Notifications</label>
-                          <p className="text-sm text-gray-500">Receive email updates about processing status</p>
+                          <label className="text-sm font-medium text-blue-800">Email Notifications</label>
+                          <p className="text-sm text-blue-600">Receive email updates about processing status</p>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
                           <input
@@ -482,21 +517,25 @@ const Profile = () => {
                             onChange={(e) => handlePreferenceChange('emailNotifications', e.target.checked)}
                             className="sr-only peer"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 transform hover:scale-105 transition-all duration-300"></div>
                         </label>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-                    <h3 className="text-lg font-medium text-red-900 mb-4">Danger Zone</h3>
+                  {/* Danger Zone */}
+                  <div className="bg-gradient-to-br from-red-50 to-pink-50 border-2 border-red-200 rounded-2xl p-8 shadow-lg animate-slide-up-3d">
+                    <h3 className="text-lg font-medium text-red-900 mb-6 flex items-center">
+                      <Shield className="mr-3" size={24} />
+                      Danger Zone
+                    </h3>
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <label className="text-sm font-medium text-red-700">Delete Account</label>
+                          <label className="text-sm font-medium text-red-800">Delete Account</label>
                           <p className="text-sm text-red-600">Permanently delete your account and all data</p>
                         </div>
-                        <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                        <button className="px-6 py-3 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-xl hover:from-red-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg btn-3d">
                           Delete Account
                         </button>
                       </div>
