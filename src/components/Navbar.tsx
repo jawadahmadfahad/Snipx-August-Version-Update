@@ -76,7 +76,7 @@ const Navbar = ({ mobileMenuOpen, setMobileMenuOpen }: NavbarProps) => {
                 { to: '/', label: 'Home' },
                 { to: '/technologies', label: 'Technologies' },
                 { to: '/editor', label: 'Editor' },
-                { to: '/Features', label: 'Features' },
+                { to: '/features', label: 'Features' },
                 { to: '/help', label: 'Help' }
               ].map((item, index) => (
                 <Link 
@@ -177,7 +177,7 @@ const Navbar = ({ mobileMenuOpen, setMobileMenuOpen }: NavbarProps) => {
               { to: '/', label: 'Home' },
               { to: '/technologies', label: 'Technologies' },
               { to: '/editor', label: 'Editor' },
-              { to: '/Features', label: 'Features' },
+              { to: '/features', label: 'Features' },
               { to: '/help', label: 'Help' }
             ].map((item, index) => (
               <Link 

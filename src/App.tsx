@@ -42,7 +42,7 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/technologies" element={<Technologies />} />
                     <Route path="/editor" element={<Editor />} />
-                    <Route path="/Features" element={<Features />} />
+                    <Route path="/features" element={<Features />} />
                     <Route path="/profile" element={isAuthenticated ? <Profile /> : <Navigate to="/login" />} />
                     <Route path="/admin" element={isAuthenticated ? <Admin /> : <Navigate to="/login" />} />
                     <Route path="/admin/tickets" element={isAuthenticated ? <AdminTickets /> : <Navigate to="/login" />} />
