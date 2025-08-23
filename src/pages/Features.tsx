@@ -168,34 +168,20 @@ const Features = () => {
   return (
     <div 
       ref={featuresRef}
-      className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden"
+      className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 relative overflow-hidden"
       style={{
-        transform: `translateY(${scrollY * 0.1}px)`,
+        transform: `translateY(${scrollY * 0.05}px)`,
       }}
     >
-      {/* 3D Background Elements */}
+      {/* Enhanced 3D Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Animated Grid */}
-        <div 
-          className="absolute inset-0 opacity-10"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(139, 92, 246, 0.3) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(139, 92, 246, 0.3) 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px',
-            transform: `perspective(1000px) rotateX(60deg) translateZ(0px)`,
-            animation: 'grid-flow 20s linear infinite'
-          }}
-        />
-
         {/* Floating 3D Orbs */}
         <div 
           className="absolute w-96 h-96 rounded-full opacity-20"
           style={{
             background: 'radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, transparent 70%)',
-            top: '5%',
-            left: '5%',
+            top: '10%',
+            left: '10%',
             transform: `
               translate3d(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px, 0)
               rotateX(${mousePosition.y * 0.1}deg)
@@ -211,7 +197,7 @@ const Features = () => {
           style={{
             background: 'radial-gradient(circle, rgba(236, 72, 153, 0.4) 0%, transparent 70%)',
             top: '60%',
-            right: '5%',
+            right: '10%',
             transform: `
               translate3d(${mousePosition.x * -0.015}px, ${mousePosition.y * -0.015}px, 0)
               rotateX(${mousePosition.y * -0.08}deg)
@@ -286,7 +272,7 @@ const Features = () => {
         {Array.from({ length: 30 }).map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 bg-white rounded-full opacity-40"
+            className="absolute w-1 h-1 bg-purple-400 rounded-full opacity-40"
             style={{
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
@@ -302,10 +288,10 @@ const Features = () => {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-20 relative z-10">
-        {/* 3D Header */}
-        <div className="text-center mb-20">
+        {/* Enhanced Header */}
+        <div className="text-center mb-20 animate-slide-up-3d">
           <div 
-            className="inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20 mb-8 shadow-2xl"
+            className="inline-flex items-center px-6 py-3 bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-white/20 mb-8 transform hover:scale-105 transition-all duration-300 hover:shadow-xl"
             style={{
               transform: `
                 perspective(1000px)
@@ -316,21 +302,21 @@ const Features = () => {
               transition: 'transform 0.3s ease-out'
             }}
           >
-            <Zap className="w-5 h-5 text-yellow-400 mr-3 animate-pulse" />
-            <span className="text-white font-medium">Revolutionary AI Features</span>
-            <Sparkles className="w-5 h-5 text-blue-400 ml-3 animate-bounce" />
+            <Zap className="w-5 h-5 text-purple-600 mr-3 animate-pulse" />
+            <span className="text-purple-700 font-medium">Revolutionary AI Features</span>
+            <Sparkles className="w-5 h-5 text-pink-600 ml-3 animate-bounce" />
           </div>
           
           <h1 
-            className="text-6xl md:text-8xl font-bold mb-6 leading-tight"
+            className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
             style={{
-              background: 'linear-gradient(135deg, #ffffff 0%, #a855f7 25%, #ec4899 50%, #3b82f6 75%, #ffffff 100%)',
+              background: 'linear-gradient(135deg, #1f2937 0%, #8b5cf6 25%, #ec4899 50%, #3b82f6 75%, #1f2937 100%)',
               backgroundSize: '300% 300%',
               WebkitBackgroundClip: 'text',
               backgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               animation: 'gradient-text-flow 4s ease-in-out infinite',
-              textShadow: '0 0 40px rgba(168, 85, 247, 0.3)',
+              textShadow: '0 0 40px rgba(139, 92, 246, 0.3)',
               transform: `
                 perspective(1000px)
                 rotateX(${mousePosition.y * 0.02}deg)
@@ -349,7 +335,7 @@ const Features = () => {
           </h1>
           
           <p 
-            className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed"
+            className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed"
             style={{
               transform: `
                 perspective(1000px)
@@ -357,8 +343,7 @@ const Features = () => {
                 rotateY(${mousePosition.x * 0.01}deg)
                 translateZ(15px)
               `,
-              transition: 'transform 0.3s ease-out',
-              textShadow: '0 2px 10px rgba(0,0,0,0.5)'
+              transition: 'transform 0.3s ease-out'
             }}
           >
             Experience the future of video editing with cutting-edge AI that transforms 
@@ -366,7 +351,7 @@ const Features = () => {
           </p>
         </div>
 
-        {/* Feature Navigation */}
+        {/* Enhanced Feature Navigation */}
         <div 
           className="flex justify-center mb-16"
           style={{
@@ -379,15 +364,15 @@ const Features = () => {
             transition: 'transform 0.3s ease-out'
           }}
         >
-          <div className="flex space-x-2 bg-white/10 backdrop-blur-md rounded-2xl p-2 border border-white/20">
+          <div className="flex space-x-2 bg-white/80 backdrop-blur-md rounded-2xl p-2 border border-white/20 shadow-xl">
             {features.map((feature, index) => (
               <button
                 key={feature.id}
                 onClick={() => setActiveFeature(index)}
                 className={`flex items-center px-6 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 ${
                   activeFeature === index
-                    ? 'bg-white/20 text-white shadow-lg'
-                    : 'text-gray-400 hover:text-white hover:bg-white/10'
+                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                 }`}
                 style={{
                   transform: activeFeature === index 
@@ -407,7 +392,7 @@ const Features = () => {
           </div>
         </div>
 
-        {/* Active Feature Display */}
+        {/* Enhanced Active Feature Display */}
         <div className="max-w-6xl mx-auto">
           {features.map((feature, index) => (
             <div
@@ -429,9 +414,8 @@ const Features = () => {
               }}
             >
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                {/* Feature Content */}
+                {/* Enhanced Feature Content */}
                 <div className="space-y-8">
-                  {/* Feature Header */}
                   <div 
                     className="space-y-6"
                     style={{
@@ -440,7 +424,7 @@ const Features = () => {
                   >
                     <div className="flex items-center space-x-4">
                       <div 
-                        className={`p-4 rounded-2xl bg-gradient-to-br from-${feature.color}-500/20 to-${feature.color}-600/20 backdrop-blur-sm border border-${feature.color}-400/30 shadow-2xl`}
+                        className={`p-4 rounded-2xl bg-gradient-to-br from-${feature.color}-100 to-${feature.color}-200 shadow-2xl border border-${feature.color}-200`}
                         style={{
                           transform: `
                             rotateY(${mousePosition.x * 0.1}deg)
@@ -457,33 +441,33 @@ const Features = () => {
                       </div>
                       
                       <div>
-                        <h2 className="text-4xl font-bold text-white mb-2">
+                        <h2 className="text-4xl font-bold text-gray-900 mb-2">
                           {feature.title}
                         </h2>
-                        <p className="text-gray-300 text-lg">
+                        <p className="text-gray-600 text-lg">
                           {feature.description}
                         </p>
                       </div>
                     </div>
 
-                    <p className="text-gray-200 text-lg leading-relaxed">
+                    <p className="text-gray-700 text-lg leading-relaxed">
                       {feature.longDescription}
                     </p>
 
-                    {/* Feature Stats */}
+                    {/* Enhanced Feature Stats */}
                     <div className="grid grid-cols-3 gap-6">
                       {Object.entries(feature.stats).map(([key, value], statIndex) => (
                         <div 
                           key={key}
-                          className="text-center"
+                          className="text-center bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-white/20 transform hover:scale-105 transition-all duration-300"
                           style={{
                             animation: activeFeature === index ? `stat-reveal 0.6s ease-out ${statIndex * 200}ms both` : 'none'
                           }}
                         >
                           <div 
-                            className="text-3xl font-bold text-white mb-1"
+                            className="text-3xl font-bold text-gray-900 mb-1"
                             style={{
-                              background: `linear-gradient(135deg, #ffffff, #${feature.color === 'purple' ? 'a855f7' : feature.color === 'teal' ? '14b8a6' : feature.color === 'green' ? '10b981' : feature.color === 'red' ? 'ef4444' : 'f97316'})`,
+                              background: `linear-gradient(135deg, #1f2937, #${feature.color === 'purple' ? '8b5cf6' : feature.color === 'teal' ? '14b8a6' : feature.color === 'green' ? '10b981' : feature.color === 'red' ? 'ef4444' : 'f97316'})`,
                               WebkitBackgroundClip: 'text',
                               backgroundClip: 'text',
                               WebkitTextFillColor: 'transparent'
@@ -491,31 +475,31 @@ const Features = () => {
                           >
                             {value}
                           </div>
-                          <div className="text-gray-400 text-sm capitalize">
+                          <div className="text-gray-500 text-sm capitalize">
                             {key.replace(/([A-Z])/g, ' $1').trim()}
                           </div>
                         </div>
                       ))}
                     </div>
 
-                    {/* Feature List */}
+                    {/* Enhanced Feature List */}
                     <div className="space-y-3">
                       {feature.features.map((item, itemIndex) => (
                         <div 
                           key={item}
-                          className="flex items-center space-x-3"
+                          className="flex items-center space-x-3 bg-white/60 backdrop-blur-sm rounded-xl p-3 shadow-md border border-white/30 transform hover:scale-105 transition-all duration-300"
                           style={{
                             animation: activeFeature === index ? `feature-item-reveal 0.5s ease-out ${itemIndex * 100}ms both` : 'none'
                           }}
                         >
-                          <div className={`w-2 h-2 bg-${feature.color}-500 rounded-full animate-pulse`} />
-                          <span className="text-gray-300">{item}</span>
-                          <CheckCircle className={`w-4 h-4 text-${feature.color}-400`} />
+                          <div className={`w-3 h-3 bg-${feature.color}-500 rounded-full animate-pulse`} />
+                          <span className="text-gray-700 font-medium">{item}</span>
+                          <CheckCircle className={`w-4 h-4 text-${feature.color}-500`} />
                         </div>
                       ))}
                     </div>
 
-                    {/* Action Buttons */}
+                    {/* Enhanced Action Buttons */}
                     <div 
                       className="flex space-x-4"
                       style={{
@@ -532,7 +516,7 @@ const Features = () => {
                         Try {feature.title}
                       </button>
                       
-                      <button className="px-6 py-4 bg-white/10 backdrop-blur-md text-white rounded-2xl font-medium hover:bg-white/20 transition-all duration-300 transform hover:scale-105 border border-white/20 flex items-center">
+                      <button className="px-6 py-4 bg-white/80 backdrop-blur-md text-gray-700 rounded-2xl font-medium hover:bg-white/90 transition-all duration-300 transform hover:scale-105 border border-gray-200 flex items-center shadow-lg">
                         <Eye size={20} className="mr-2" />
                         Learn More
                       </button>
@@ -540,7 +524,7 @@ const Features = () => {
                   </div>
                 </div>
 
-                {/* Feature Demo/Visualization */}
+                {/* Enhanced Feature Demo/Visualization */}
                 <div 
                   className="relative"
                   style={{
@@ -548,7 +532,7 @@ const Features = () => {
                   }}
                 >
                   <div 
-                    className="relative bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-2xl"
+                    className="relative bg-white/90 backdrop-blur-md rounded-3xl p-8 border border-white/30 shadow-2xl"
                     style={{
                       transform: `
                         perspective(1000px)
@@ -562,13 +546,13 @@ const Features = () => {
                     {/* Feature-specific Demo Content */}
                     {feature.id === 'audio-cutting' && (
                       <div className="space-y-6">
-                        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-                          <Wand2 className="mr-2 text-purple-400" size={24} />
+                        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                          <Wand2 className="mr-2 text-purple-600" size={24} />
                           Audio Waveform Analysis
                         </h3>
                         
                         {/* Animated Waveform */}
-                        <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-600/50">
+                        <div className="bg-gray-100 rounded-xl p-6 border border-gray-200">
                           <div className="flex items-end justify-center space-x-1 h-24">
                             {Array.from({ length: 40 }).map((_, i) => (
                               <div
@@ -582,21 +566,21 @@ const Features = () => {
                               />
                             ))}
                           </div>
-                          <div className="flex justify-between text-xs text-gray-400 mt-2">
+                          <div className="flex justify-between text-xs text-gray-500 mt-2">
                             <span>0:00</span>
-                            <span className="text-purple-400">Silence Detected</span>
+                            <span className="text-purple-600 font-medium">Silence Detected</span>
                             <span>2:45</span>
                           </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                          <div className="bg-red-500/20 border border-red-400/30 rounded-xl p-4 text-center">
-                            <div className="text-red-400 text-2xl font-bold">45%</div>
-                            <div className="text-red-300 text-sm">Silence Removed</div>
+                          <div className="bg-red-100 border border-red-200 rounded-xl p-4 text-center">
+                            <div className="text-red-600 text-2xl font-bold">45%</div>
+                            <div className="text-red-500 text-sm">Silence Removed</div>
                           </div>
-                          <div className="bg-green-500/20 border border-green-400/30 rounded-xl p-4 text-center">
-                            <div className="text-green-400 text-2xl font-bold">2.3x</div>
-                            <div className="text-green-300 text-sm">Faster Playback</div>
+                          <div className="bg-green-100 border border-green-200 rounded-xl p-4 text-center">
+                            <div className="text-green-600 text-2xl font-bold">2.3x</div>
+                            <div className="text-green-500 text-sm">Faster Playback</div>
                           </div>
                         </div>
                       </div>
@@ -604,8 +588,8 @@ const Features = () => {
 
                     {feature.id === 'subtitling' && (
                       <div className="space-y-6">
-                        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-                          <Brain className="mr-2 text-teal-400" size={24} />
+                        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                          <Brain className="mr-2 text-teal-600" size={24} />
                           Multi-Language Processing
                         </h3>
                         
@@ -617,37 +601,37 @@ const Features = () => {
                           ].map((subtitle, i) => (
                             <div 
                               key={i}
-                              className="bg-gray-800/50 rounded-xl p-4 border border-gray-600/50"
+                              className="bg-gray-100 rounded-xl p-4 border border-gray-200 transform hover:scale-105 transition-all duration-300"
                               style={{
                                 animation: `subtitle-appear ${0.5}s ease-out ${i * 200}ms both`
                               }}
                             >
                               <div className="flex items-center justify-between mb-2">
-                                <span className="text-teal-400 text-sm font-medium flex items-center">
+                                <span className="text-teal-600 text-sm font-medium flex items-center">
                                   <span className="mr-2">{subtitle.flag}</span>
                                   {subtitle.lang}
                                 </span>
                                 <div className="flex items-center space-x-2">
                                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                                  <span className="text-green-400 text-xs">Live</span>
+                                  <span className="text-green-600 text-xs">Live</span>
                                 </div>
                               </div>
-                              <p className="text-white text-sm">{subtitle.text}</p>
+                              <p className="text-gray-800 text-sm">{subtitle.text}</p>
                             </div>
                           ))}
                         </div>
 
-                        <div className="bg-teal-500/20 border border-teal-400/30 rounded-xl p-4 text-center">
-                          <div className="text-teal-400 text-2xl font-bold">50+</div>
-                          <div className="text-teal-300 text-sm">Languages Supported</div>
+                        <div className="bg-teal-100 border border-teal-200 rounded-xl p-4 text-center">
+                          <div className="text-teal-600 text-2xl font-bold">50+</div>
+                          <div className="text-teal-500 text-sm">Languages Supported</div>
                         </div>
                       </div>
                     )}
 
                     {feature.id === 'audio-enhancement' && (
                       <div className="space-y-6">
-                        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-                          <Volume2 className="mr-2 text-green-400" size={24} />
+                        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                          <Volume2 className="mr-2 text-green-600" size={24} />
                           Real-time Audio Processing
                         </h3>
                         
@@ -660,10 +644,10 @@ const Features = () => {
                           ].map((control, i) => (
                             <div key={control.label} className="space-y-2">
                               <div className="flex justify-between text-sm">
-                                <span className="text-gray-300">{control.label}</span>
-                                <span className={`text-${control.color}-400 font-medium`}>{control.value}%</span>
+                                <span className="text-gray-700">{control.label}</span>
+                                <span className={`text-${control.color}-600 font-medium`}>{control.value}%</span>
                               </div>
-                              <div className="bg-gray-700 rounded-full h-2 overflow-hidden">
+                              <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
                                 <div 
                                   className={`bg-gradient-to-r from-${control.color}-500 to-${control.color}-400 h-2 rounded-full transition-all duration-1000`}
                                   style={{ 
@@ -678,15 +662,15 @@ const Features = () => {
 
                         {/* Before/After Comparison */}
                         <div className="grid grid-cols-2 gap-4">
-                          <div className="bg-red-500/20 border border-red-400/30 rounded-xl p-4 text-center">
-                            <div className="text-red-400 text-lg font-bold">Before</div>
-                            <div className="text-red-300 text-sm">Noisy Audio</div>
+                          <div className="bg-red-100 border border-red-200 rounded-xl p-4 text-center">
+                            <div className="text-red-600 text-lg font-bold">Before</div>
+                            <div className="text-red-500 text-sm">Noisy Audio</div>
                             <div className="mt-2 flex justify-center">
                               <div className="flex space-x-1">
                                 {Array.from({ length: 8 }).map((_, i) => (
                                   <div
                                     key={i}
-                                    className="w-1 bg-red-400 rounded-full"
+                                    className="w-1 bg-red-500 rounded-full"
                                     style={{
                                       height: `${10 + Math.random() * 20}px`,
                                       animation: `noise-wave 1s ease-in-out infinite ${i * 100}ms`
@@ -697,15 +681,15 @@ const Features = () => {
                             </div>
                           </div>
                           
-                          <div className="bg-green-500/20 border border-green-400/30 rounded-xl p-4 text-center">
-                            <div className="text-green-400 text-lg font-bold">After</div>
-                            <div className="text-green-300 text-sm">Crystal Clear</div>
+                          <div className="bg-green-100 border border-green-200 rounded-xl p-4 text-center">
+                            <div className="text-green-600 text-lg font-bold">After</div>
+                            <div className="text-green-500 text-sm">Crystal Clear</div>
                             <div className="mt-2 flex justify-center">
                               <div className="flex space-x-1">
                                 {Array.from({ length: 8 }).map((_, i) => (
                                   <div
                                     key={i}
-                                    className="w-1 bg-green-400 rounded-full"
+                                    className="w-1 bg-green-500 rounded-full"
                                     style={{
                                       height: `${15 + Math.sin(i * 0.5) * 10}px`,
                                       animation: `clean-wave 1.5s ease-in-out infinite ${i * 150}ms`
@@ -721,8 +705,8 @@ const Features = () => {
 
                     {feature.id === 'thumbnail-generation' && (
                       <div className="space-y-6">
-                        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-                          <Eye className="mr-2 text-red-400" size={24} />
+                        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                          <Eye className="mr-2 text-red-600" size={24} />
                           AI Thumbnail Analysis
                         </h3>
                         
@@ -736,10 +720,10 @@ const Features = () => {
                           ].map((thumb, i) => (
                             <div 
                               key={i}
-                              className="relative group cursor-pointer rounded-xl overflow-hidden border-2 border-transparent hover:border-red-400 transition-all duration-300"
+                              className="relative group cursor-pointer rounded-xl overflow-hidden border-2 border-transparent hover:border-red-400 transition-all duration-300 transform hover:scale-105"
                               style={{
                                 animation: `thumbnail-reveal 0.6s ease-out ${i * 150}ms both`,
-                                transform: `perspective(500px) rotateY(${i % 2 === 0 ? -5 : 5}deg)`
+                                transform: `perspective(500px) rotateY(${i % 2 === 0 ? -2 : 2}deg)`
                               }}
                             >
                               <img 
@@ -758,34 +742,34 @@ const Features = () => {
                           ))}
                         </div>
 
-                        <div className="bg-red-500/20 border border-red-400/30 rounded-xl p-4 text-center">
-                          <div className="text-red-400 text-2xl font-bold">+45%</div>
-                          <div className="text-red-300 text-sm">Click-through Rate Increase</div>
+                        <div className="bg-red-100 border border-red-200 rounded-xl p-4 text-center">
+                          <div className="text-red-600 text-2xl font-bold">+45%</div>
+                          <div className="text-red-500 text-sm">Click-through Rate Increase</div>
                         </div>
                       </div>
                     )}
 
                     {feature.id === 'video-summarization' && (
                       <div className="space-y-6">
-                        <h3 className="text-xl font-bold text-white mb-4 flex items-center">
-                          <FastForward className="mr-2 text-orange-400" size={24} />
+                        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                          <FastForward className="mr-2 text-orange-600" size={24} />
                           Content Intelligence
                         </h3>
                         
                         {/* Timeline Visualization */}
-                        <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-600/50">
+                        <div className="bg-gray-100 rounded-xl p-6 border border-gray-200">
                           <div className="space-y-4">
-                            <div className="flex justify-between text-sm text-gray-300">
+                            <div className="flex justify-between text-sm text-gray-600">
                               <span>Original: 15:30</span>
-                              <span className="text-orange-400">Summary: 4:45</span>
+                              <span className="text-orange-600 font-medium">Summary: 4:45</span>
                             </div>
                             
                             {/* Timeline Bars */}
                             <div className="space-y-3">
-                              <div className="bg-gray-600 rounded-full h-3 overflow-hidden">
-                                <div className="bg-gradient-to-r from-gray-400 to-gray-500 h-3 rounded-full w-full" />
+                              <div className="bg-gray-300 rounded-full h-3 overflow-hidden">
+                                <div className="bg-gradient-to-r from-gray-500 to-gray-600 h-3 rounded-full w-full" />
                               </div>
-                              <div className="bg-gray-600 rounded-full h-3 overflow-hidden">
+                              <div className="bg-gray-300 rounded-full h-3 overflow-hidden">
                                 <div 
                                   className="bg-gradient-to-r from-orange-500 to-red-500 h-3 rounded-full transition-all duration-2000"
                                   style={{ 
@@ -797,23 +781,23 @@ const Features = () => {
                             </div>
 
                             {/* Key Moments */}
-                            <div className="flex justify-between text-xs text-gray-400">
+                            <div className="flex justify-between text-xs text-gray-500">
                               <span>Intro</span>
-                              <span className="text-orange-400">Key Point 1</span>
-                              <span className="text-orange-400">Key Point 2</span>
+                              <span className="text-orange-600 font-medium">Key Point 1</span>
+                              <span className="text-orange-600 font-medium">Key Point 2</span>
                               <span>Conclusion</span>
                             </div>
                           </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                          <div className="bg-orange-500/20 border border-orange-400/30 rounded-xl p-4 text-center">
-                            <div className="text-orange-400 text-2xl font-bold">70%</div>
-                            <div className="text-orange-300 text-sm">Time Saved</div>
+                          <div className="bg-orange-100 border border-orange-200 rounded-xl p-4 text-center">
+                            <div className="text-orange-600 text-2xl font-bold">70%</div>
+                            <div className="text-orange-500 text-sm">Time Saved</div>
                           </div>
-                          <div className="bg-blue-500/20 border border-blue-400/30 rounded-xl p-4 text-center">
-                            <div className="text-blue-400 text-2xl font-bold">+120%</div>
-                            <div className="text-blue-300 text-sm">Engagement</div>
+                          <div className="bg-blue-100 border border-blue-200 rounded-xl p-4 text-center">
+                            <div className="text-blue-600 text-2xl font-bold">+120%</div>
+                            <div className="text-blue-500 text-sm">Engagement</div>
                           </div>
                         </div>
                       </div>
@@ -846,7 +830,7 @@ const Features = () => {
           ))}
         </div>
 
-        {/* Feature Navigation Dots */}
+        {/* Enhanced Feature Navigation Dots */}
         <div className="flex justify-center mt-16 space-x-4">
           {features.map((_, index) => (
             <button
@@ -854,8 +838,8 @@ const Features = () => {
               onClick={() => setActiveFeature(index)}
               className={`w-3 h-3 rounded-full transition-all duration-300 transform hover:scale-125 ${
                 activeFeature === index 
-                  ? 'bg-white shadow-lg' 
-                  : 'bg-white/30 hover:bg-white/50'
+                  ? 'bg-purple-600 shadow-lg' 
+                  : 'bg-gray-300 hover:bg-gray-400'
               }`}
               style={{
                 animation: activeFeature === index ? 'dot-pulse 2s ease-in-out infinite' : 'none'
@@ -864,7 +848,7 @@ const Features = () => {
           ))}
         </div>
 
-        {/* Bottom CTA */}
+        {/* Enhanced Bottom CTA */}
         <div 
           className="text-center mt-20"
           style={{
@@ -893,11 +877,6 @@ const Features = () => {
 
       {/* Custom Styles */}
       <style jsx>{`
-        @keyframes grid-flow {
-          0% { transform: perspective(1000px) rotateX(60deg) translateZ(0px) translateY(0px); }
-          100% { transform: perspective(1000px) rotateX(60deg) translateZ(0px) translateY(-50px); }
-        }
-        
         @keyframes gradient-text-flow {
           0%, 100% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
@@ -1036,8 +1015,8 @@ const Features = () => {
         }
         
         @keyframes dot-pulse {
-          0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.7); }
-          50% { transform: scale(1.2); box-shadow: 0 0 0 10px rgba(255,255,255,0); }
+          0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); }
+          50% { transform: scale(1.2); box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
         }
         
         @keyframes gradient-flow {
