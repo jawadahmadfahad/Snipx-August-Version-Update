@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Facebook, Twitter, Instagram, Youtube, Scissors, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, Facebook, Twitter, Instagram, Youtube, Scissors, Sparkles, Zap, Brain, Shield, Cpu, UserPlus } from 'lucide-react';
 import { z } from 'zod';
 
 const signupSchema = z.object({
@@ -173,6 +173,28 @@ const Signup = () => {
           }}
         />
 
+        {/* Floating Tech Icons */}
+        {[Brain, Shield, Cpu, Zap].map((Icon, index) => (
+          <div
+            key={index}
+            className="absolute opacity-40"
+            style={{
+              top: `${15 + index * 20}%`,
+              left: `${85 + Math.sin(index) * 10}%`,
+              transform: `
+                translate3d(${mousePosition.x * (0.01 + index * 0.005)}px, ${mousePosition.y * (0.01 + index * 0.005)}px, 0)
+                rotateX(${mousePosition.y * 0.1}deg)
+                rotateY(${mousePosition.x * 0.1}deg)
+                rotateZ(${index * 90}deg)
+              `,
+              transition: 'transform 0.3s ease-out',
+              animation: `tech-float-${index} ${8 + index * 2}s ease-in-out infinite`
+            }}
+          >
+            <Icon className="w-12 h-12 text-purple-400 drop-shadow-lg" />
+          </div>
+        ))}
+
         {/* Floating Sparkles */}
         <div className="absolute top-1/4 left-1/3 animate-sparkle-3d">
           <Sparkles className="text-purple-400/40 w-6 h-6 transform-gpu" style={{ transform: 'rotateZ(45deg)' }} />
@@ -236,7 +258,13 @@ const Signup = () => {
           <h1 
             className="text-4xl font-extrabold tracking-tight sm:text-5xl animate-slide-up-3d"
             style={{
-              textShadow: '0 0 30px rgba(255,255,255,0.3)'
+              textShadow: '0 0 30px rgba(255,255,255,0.3)',
+              background: 'linear-gradient(135deg, #ffffff 0%, #a855f7 25%, #ec4899 50%, #3b82f6 75%, #ffffff 100%)',
+              backgroundSize: '300% 300%',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              animation: 'gradient-shift 4s ease-in-out infinite'
             }}
           >
             Join SnipX Today
@@ -263,6 +291,9 @@ const Signup = () => {
         >
           <div className="p-8">
             <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-100/20 to-pink-100/20 rounded-full mb-6 backdrop-blur-md border border-white/20">
+                <UserPlus className="text-purple-400 animate-pulse-3d" size={32} />
+              </div>
               <h2 className="text-2xl font-bold text-white animate-slide-in-3d">Create your account</h2>
               <p className="text-gray-300 mt-2 animate-fade-in-3d">
                 Already have an account?{' '}
@@ -365,20 +396,25 @@ const Signup = () => {
 
                 {/* Enhanced Password Strength Indicator */}
                 <div className="mt-2">
-                  <div className="flex justify-between text-xs text-gray-400 mb-1">
+                  <div className="flex justify-between text-xs text-gray-300 mb-1">
                     <span>Password strength</span>
                     <span className={`${passwordStrength >= 3 ? 'text-green-400' : passwordStrength >= 2 ? 'text-yellow-400' : 'text-red-400'}`}> 
                       {['Weak','Fair','Good','Strong','Very Strong'][passwordStrength]}
                     </span>
                   </div>
-                  <div className="w-full bg-gray-700 rounded-full h-1">
+                  <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
                     <div 
-                      className={`h-1 rounded-full transition-all duration-300 ${
+                      className={`h-2 rounded-full transition-all duration-500 ${
                         passwordStrength >= 3 ? 'bg-gradient-to-r from-green-500 to-emerald-500' :
                         passwordStrength >= 2 ? 'bg-gradient-to-r from-yellow-500 to-orange-500' :
                         'bg-gradient-to-r from-red-500 to-pink-500'
                       }`}
-                      style={{width: `${(passwordStrength/4)*100}%`}}
+                      style={{
+                        width: `${(passwordStrength/4)*100}%`,
+                        boxShadow: passwordStrength >= 3 ? '0 0 10px rgba(34, 197, 94, 0.5)' : 
+                                   passwordStrength >= 2 ? '0 0 10px rgba(245, 158, 11, 0.5)' :
+                                   '0 0 10px rgba(239, 68, 68, 0.5)'
+                      }}
                     />
                   </div>
                 </div>
@@ -480,6 +516,31 @@ const Signup = () => {
         @keyframes grid-flow {
           0% { transform: perspective(1000px) rotateX(60deg) translateZ(0px) translateY(0px); }
           100% { transform: perspective(1000px) rotateX(60deg) translateZ(0px) translateY(-50px); }
+        }
+        
+        @keyframes gradient-shift {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes tech-float-0 {
+          0%, 100% { transform: translateY(0px) rotateZ(0deg); }
+          50% { transform: translateY(-20px) rotateZ(180deg); }
+        }
+        
+        @keyframes tech-float-1 {
+          0%, 100% { transform: translateY(0px) rotateZ(0deg); }
+          50% { transform: translateY(-15px) rotateZ(-180deg); }
+        }
+        
+        @keyframes tech-float-2 {
+          0%, 100% { transform: translateY(0px) rotateZ(0deg); }
+          50% { transform: translateY(-25px) rotateZ(90deg); }
+        }
+        
+        @keyframes tech-float-3 {
+          0%, 100% { transform: translateY(0px) rotateZ(0deg); }
+          50% { transform: translateY(-18px) rotateZ(-90deg); }
         }
         
         @keyframes particle-float-0 {

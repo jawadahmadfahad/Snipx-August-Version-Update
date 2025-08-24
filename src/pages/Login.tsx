@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Facebook, Twitter, Instagram, Youtube, Scissors, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, Facebook, Twitter, Instagram, Youtube, Scissors, Sparkles, Zap, Brain, Shield, Cpu } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
 
@@ -125,7 +125,7 @@ const Login = () => {
         />
 
         <div 
-          className="absolute w-24 h-24 opacity-40"
+          className="absolute w-24 h-24 opacity-50"
           style={{
             bottom: '30%',
             left: '15%',
@@ -141,6 +141,28 @@ const Login = () => {
           }}
         />
 
+        {/* Floating Tech Icons */}
+        {[Brain, Shield, Cpu, Zap].map((Icon, index) => (
+          <div
+            key={index}
+            className="absolute opacity-40"
+            style={{
+              top: `${20 + index * 20}%`,
+              left: `${80 + Math.sin(index) * 15}%`,
+              transform: `
+                translate3d(${mousePosition.x * (0.01 + index * 0.005)}px, ${mousePosition.y * (0.01 + index * 0.005)}px, 0)
+                rotateX(${mousePosition.y * 0.1}deg)
+                rotateY(${mousePosition.x * 0.1}deg)
+                rotateZ(${index * 90}deg)
+              `,
+              transition: 'transform 0.3s ease-out',
+              animation: `tech-float-${index} ${8 + index * 2}s ease-in-out infinite`
+            }}
+          >
+            <Icon className="w-12 h-12 text-purple-400 drop-shadow-lg" />
+          </div>
+        ))}
+
         {/* Floating Sparkles */}
         <div className="absolute top-1/4 left-1/3 animate-sparkle-3d">
           <Sparkles className="text-purple-400/40 w-6 h-6 transform-gpu" style={{ transform: 'rotateZ(45deg)' }} />
@@ -150,7 +172,7 @@ const Login = () => {
         </div>
 
         {/* Particle System */}
-        {Array.from({ length: 20 }).map((_, i) => (
+        {Array.from({ length: 25 }).map((_, i) => (
           <div
             key={i}
             className="absolute w-1 h-1 bg-white rounded-full opacity-30"
@@ -204,7 +226,13 @@ const Login = () => {
           <h1 
             className="text-5xl font-extrabold tracking-tight sm:text-6xl animate-slide-up-3d"
             style={{
-              textShadow: '0 0 30px rgba(255,255,255,0.3)'
+              textShadow: '0 0 30px rgba(255,255,255,0.3)',
+              background: 'linear-gradient(135deg, #ffffff 0%, #a855f7 25%, #ec4899 50%, #3b82f6 75%, #ffffff 100%)',
+              backgroundSize: '300% 300%',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              animation: 'gradient-shift 4s ease-in-out infinite'
             }}
           >
             Welcome back to SnipX
@@ -231,6 +259,9 @@ const Login = () => {
         >
           <div className="p-8">
             <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-100/20 to-pink-100/20 rounded-full mb-6 backdrop-blur-md border border-white/20">
+                <Shield className="text-purple-400 animate-pulse-3d" size={32} />
+              </div>
               <h2 className="text-3xl font-bold text-white animate-slide-in-3d">Sign in to your account</h2>
               <p className="text-gray-300 mt-2 animate-fade-in-3d">
                 Don't have an account?{' '}
@@ -426,6 +457,31 @@ const Login = () => {
         @keyframes grid-flow {
           0% { transform: perspective(1000px) rotateX(60deg) translateZ(0px) translateY(0px); }
           100% { transform: perspective(1000px) rotateX(60deg) translateZ(0px) translateY(-50px); }
+        }
+        
+        @keyframes gradient-shift {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes tech-float-0 {
+          0%, 100% { transform: translateY(0px) rotateZ(0deg); }
+          50% { transform: translateY(-20px) rotateZ(180deg); }
+        }
+        
+        @keyframes tech-float-1 {
+          0%, 100% { transform: translateY(0px) rotateZ(0deg); }
+          50% { transform: translateY(-15px) rotateZ(-180deg); }
+        }
+        
+        @keyframes tech-float-2 {
+          0%, 100% { transform: translateY(0px) rotateZ(0deg); }
+          50% { transform: translateY(-25px) rotateZ(90deg); }
+        }
+        
+        @keyframes tech-float-3 {
+          0%, 100% { transform: translateY(0px) rotateZ(0deg); }
+          50% { transform: translateY(-18px) rotateZ(-90deg); }
         }
         
         @keyframes particle-float-0 {
