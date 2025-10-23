@@ -1,129 +1,193 @@
-import { useState } from 'react';
-import { Upload, CheckCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Sparkles } from 'lucide-react';
+import VideoEditor from '../components/VideoEditor';
 
 const Editor = () => {
-  const [isDragging, setIsDragging] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [videoURL, setVideoURL] = useState<string | null>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isVisible, setIsVisible] = useState(false);
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
+  useEffect(() => {
+    setIsVisible(true);
 
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const file = e.dataTransfer.files[0];
-      setVideoURL(URL.createObjectURL(file));
-      simulateUpload();
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      setVideoURL(URL.createObjectURL(file));
-      simulateUpload();
-    }
-  };
-
-  const simulateUpload = () => {
-    setIsUploading(true);
-    setUploadProgress(0);
-
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        const newProgress = prev + Math.random() * 10;
-        if (newProgress >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return newProgress;
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100,
       });
-    }, 300);
-  };
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   return (
-    <section id="try-it" className="py-16 px-4 bg-gradient-to-b from-white to-purple-50">
-      <div className="container mx-auto max-w-4xl">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Try SnipX Now</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Upload your video to experience the power of automated video enhancement and summarization.
+    <section className="relative min-h-screen py-16 px-4 overflow-hidden bg-gradient-to-br from-slate-50 via-white to-purple-50">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Floating Orbs */}
+        <div
+          className="absolute w-96 h-96 bg-gradient-to-r from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"
+          style={{
+            top: '10%',
+            left: '10%',
+            transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px)`,
+            transition: 'transform 0.3s ease-out',
+            animation: 'float 12s ease-in-out infinite'
+          }}
+        />
+        <div
+          className="absolute w-80 h-80 bg-gradient-to-r from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl"
+          style={{
+            top: '60%',
+            right: '10%',
+            transform: `translate(${mousePosition.x * -0.015}px, ${mousePosition.y * -0.015}px)`,
+            transition: 'transform 0.3s ease-out',
+            animation: 'float-delayed 15s ease-in-out infinite'
+          }}
+        />
+        <div
+          className="absolute w-64 h-64 bg-gradient-to-r from-indigo-400/20 to-purple-400/20 rounded-full blur-3xl"
+          style={{
+            top: '30%',
+            right: '30%',
+            transform: `translate(${mousePosition.x * 0.01}px, ${mousePosition.y * 0.01}px)`,
+            transition: 'transform 0.3s ease-out',
+            animation: 'pulse-slow 8s ease-in-out infinite'
+          }}
+        />
+
+        {/* Sparkle Elements */}
+        <div className="absolute top-20 left-1/4" style={{ animation: 'sparkle 3s ease-in-out infinite' }}>
+          <Sparkles className="text-purple-400 w-6 h-6" />
+        </div>
+        <div className="absolute top-40 right-1/3" style={{ animation: 'sparkle-delayed 3.5s ease-in-out infinite' }}>
+          <Sparkles className="text-pink-400 w-4 h-4" />
+        </div>
+        <div className="absolute bottom-32 left-1/3" style={{ animation: 'sparkle-slow 4s ease-in-out infinite' }}>
+          <Sparkles className="text-blue-400 w-5 h-5" />
+        </div>
+      </div>
+
+      <div className="container mx-auto max-w-7xl relative z-10">
+        <div className={`text-center mb-12 transition-all duration-1000 ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+        }`}>
+          {/* Badge */}
+          <div
+            className="inline-flex items-center px-6 py-3 bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-white/20 mb-8 transform hover:scale-105 transition-all duration-300 hover:shadow-xl"
+            style={{
+              animation: 'slide-in-left 0.8s ease-out'
+            }}
+          >
+            <Sparkles className="w-5 h-5 text-purple-600 mr-3 animate-pulse" />
+            <span className="text-purple-700 font-medium">Professional Video Editor</span>
+          </div>
+
+          <h1
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight"
+            style={{
+              background: 'linear-gradient(135deg, #1f2937 0%, #8b5cf6 25%, #ec4899 50%, #3b82f6 75%, #1f2937 100%)',
+              backgroundSize: '300% 300%',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              animation: 'gradient-text-flow 4s ease-in-out infinite',
+              textShadow: '0 0 40px rgba(139, 92, 246, 0.3)',
+              transform: `
+                perspective(1000px)
+                rotateX(${mousePosition.y * 0.02}deg)
+                rotateY(${mousePosition.x * 0.02}deg)
+                translateZ(30px)
+              `,
+              transition: 'transform 0.3s ease-out'
+            }}
+          >
+            AI-Powered Video Editor
+          </h1>
+
+          <p
+            className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed"
+            style={{
+              transform: `
+                perspective(1000px)
+                rotateX(${mousePosition.y * 0.01}deg)
+                rotateY(${mousePosition.x * 0.01}deg)
+                translateZ(15px)
+              `,
+              transition: 'transform 0.3s ease-out'
+            }}
+          >
+            Upload your video and let AI handle the magic - automated trimming, subtitles, and enhancement
           </p>
         </div>
 
+        {/* Video Editor Component */}
         <div
-          className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center
-                      transition-colors duration-300 bg-white
-                      ${isDragging ? 'border-purple-600 bg-purple-50' : 'border-gray-300'}`}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
+          className={`transition-all duration-1000 delay-300 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}
+          style={{
+            transform: `
+              perspective(1000px)
+              rotateX(${mousePosition.y * 0.005}deg)
+              rotateY(${mousePosition.x * 0.005}deg)
+              translateZ(20px)
+            `,
+            transition: 'transform 0.3s ease-out'
+          }}
         >
-          {isUploading ? (
-            <div className="w-full max-w-md">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-700">Uploading video...</span>
-                <span className="text-sm font-medium text-purple-700">{Math.round(uploadProgress)}%</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2.5">
-                <div
-                  className="bg-purple-600 h-2.5 rounded-full transition-all duration-300"
-                  style={{ width: `${uploadProgress}%` }}
-                ></div>
-              </div>
-              {uploadProgress === 100 && (
-                <div className="flex items-center justify-center mt-4 text-green-600 gap-2">
-                  <CheckCircle size={20} />
-                  <span>Upload complete! Redirecting to editor...</span>
-                </div>
-              )}
-            </div>
-          ) : (
-            <>
-              <div className="mb-4 p-4 rounded-full bg-purple-100">
-                <Upload className="text-purple-600" size={32} />
-              </div>
-              <h3 className="text-xl font-bold mb-2 text-gray-900">Upload Your Video</h3>
-              <p className="text-gray-600 mb-6 text-center max-w-md">
-                Drag and drop your video file here, or click the button below to select from your device.
-              </p>
-              <label className="bg-purple-600 text-white px-6 py-3 rounded-md hover:bg-purple-700 
-                                transition-colors cursor-pointer font-medium">
-                Select Video
-                <input
-                  type="file"
-                  className="hidden"
-                  accept="video/*"
-                  onChange={handleFileChange}
-                />
-              </label>
-              <p className="mt-4 text-sm text-gray-500">
-                Supported formats: MP4, MOV, AVI, MKV (Max 500MB)
-              </p>
-            </>
-          )}
+          <VideoEditor />
         </div>
-
-        {videoURL && (
-          <div className="mt-8 w-full max-w-2xl mx-auto">
-            <video
-              src={videoURL}
-              controls
-              className="w-full rounded-lg shadow-lg"
-            />
-          </div>
-        )}
       </div>
+
+      {/* Custom Animations */}
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) translateX(0px); }
+          50% { transform: translateY(-20px) translateX(10px); }
+        }
+
+        @keyframes float-delayed {
+          0%, 100% { transform: translateY(0px) translateX(0px); }
+          50% { transform: translateY(-15px) translateX(-10px); }
+        }
+
+        @keyframes pulse-slow {
+          0%, 100% { transform: scale(1); opacity: 0.2; }
+          50% { transform: scale(1.1); opacity: 0.3; }
+        }
+
+        @keyframes sparkle {
+          0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+          50% { opacity: 1; transform: scale(1) rotate(180deg); }
+        }
+
+        @keyframes sparkle-delayed {
+          0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+          50% { opacity: 1; transform: scale(1) rotate(-180deg); }
+        }
+
+        @keyframes sparkle-slow {
+          0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+          50% { opacity: 1; transform: scale(1) rotate(90deg); }
+        }
+
+        @keyframes gradient-text-flow {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+
+        @keyframes slide-in-left {
+          0% {
+            transform: translateX(-20px) rotateY(-5deg);
+            opacity: 0;
+          }
+          100% {
+            transform: translateX(0px) rotateY(0deg);
+            opacity: 1;
+          }
+        }
+      `}</style>
     </section>
   );
 };
